@@ -3,18 +3,23 @@ import type { Method } from '../data/methods';
 
 interface Props {
   items: Method[];
+  // 첫 화면용: 설명 없이 사진과 이름만
+  compact?: boolean;
+  cols?: number;
 }
 
-const { items } = Astro.props;
+const { items, compact = false, cols = 3 } = Astro.props;
 ---
-<div class="cards">
+<div class:list={['cards', { compact }]} style={`--cols:${cols}`}>
   {items.map((m) => (
     <a class="card" href={`/method/${m.group}/${m.slug}/`}>
-      <div class="ph"><img src={m.thumb} alt="" loading="lazy" decoding="async" /></div>
-      <div class="body">
+      <div class="ph">
+        <img src={m.thumb} alt="" loading="lazy" decoding="async" />
         {m.patent && <span class="tag">특허 {m.patent.no}</span>}
+      </div>
+      <div class="body">
         <h3>{m.title}</h3>
-        <p>{m.short}</p>
+        {!compact && <p>{m.short}</p>}
       </div>
     </a>
   ))}

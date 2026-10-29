@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { company } from '../data/site';
 import { byGroup, groups, patents } from '../data/methods';
+import MethodCards from '../components/MethodCards.astro';
 
 const areas = (['reinforce', 'pile'] as const).map((g) => ({ key: g, ...groups[g], items: byGroup(g) }));
 ---
@@ -26,19 +27,7 @@ const areas = (['reinforce', 'pile'] as const).map((g) => ({ key: g, ...groups[g
       <section class="section">
         <h2>{a.title} <small>{a.items.length}개 공법</small></h2>
         <p class="area-lead">{a.lead}</p>
-        <ul class="area-list">
-          {a.items.map((m) => (
-            <li>
-              <a href={`/method/${m.group}/${m.slug}/`}>
-                <img src={m.thumb} alt="" loading="lazy" decoding="async">
-                <span>
-                  <b>{m.title}</b>
-                  {m.patent && <em>특허 {m.patent.no}</em>}
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <MethodCards items={a.items} compact cols={a.items.length} />
       </section>
     ))}
 
@@ -65,28 +54,21 @@ const areas = (['reinforce', 'pile'] as const).map((g) => ({ key: g, ...groups[g
   .eyebrow { color: var(--steel); font-weight: 700; font-size: 15px; }
   .hero h1 { font-size: 38px; line-height: 1.35; color: var(--navy); margin-top: 10px; letter-spacing: -.01em; }
   .hero-lead { margin: 18px 0 26px; font-size: 17px; color: var(--muted); max-width: 560px; }
-  .hero-symbol { width: 240px; flex: none; }
+  .hero-symbol { width: 240px; flex: none; mix-blend-mode: multiply; }
   .area-lead { color: var(--muted); margin: -6px 0 16px; }
-  .area-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .area-list a { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 10px; padding: 10px; text-decoration: none; color: var(--ink); height: 100%; }
-  .area-list a:hover { background: var(--soft); }
-  .area-list img { width: 72px; height: 54px; object-fit: cover; border-radius: 6px; flex: none; background: var(--soft); }
-  .area-list b { display: block; font-size: 15.5px; color: var(--navy); line-height: 1.4; }
-  .area-list em { display: block; font-style: normal; font-size: 12.5px; color: var(--steel); margin-top: 2px; }
-  .patent-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .patent-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
   .patent-strip a { display: block; height: 100%; background: var(--navy); color: #fff; border-radius: 10px; padding: 16px 18px; text-decoration: none; }
   .patent-strip .no { font-size: 13px; color: #B9CCE0; }
   .patent-strip b { display: block; margin-top: 4px; font-size: 16px; line-height: 1.45; }
   @media (max-width: 860px) {
     .hero-symbol { width: 150px; }
+    .patent-strip { grid-template-columns: 1fr; }
     .hero h1 { font-size: 30px; }
-    .area-list, .patent-strip { grid-template-columns: 1fr 1fr; }
-  }
+    }
   @media (max-width: 520px) {
     .hero-inner { flex-direction: column-reverse; align-items: flex-start; padding-top: 32px; padding-bottom: 40px; gap: 14px; }
     .hero-symbol { width: 96px; }
     .hero h1 { font-size: 26px; }
     .hero-lead { font-size: 15.5px; }
-    .area-list, .patent-strip { grid-template-columns: 1fr; }
-  }
+    }
 </style>

@@ -150,7 +150,7 @@ export const methods: Method[] = [
     slug: 'carbon-sheet',
     title: '탄소섬유시트 보강공법',
     short: '일방향 탄소섬유시트를 콘크리트 표면에 붙여 보강하는 공법',
-    thumb: im('construct_5_img06'),
+    thumb: im('construct_5_img04'),
     blocks: [
       {
         type: 'text',
@@ -180,7 +180,7 @@ export const methods: Method[] = [
     slug: 'carbon-plate',
     title: '탄소섬유판 보강공법',
     short: '미리 굳힌 탄소판을 붙여 빠르고 고른 품질로 보강하는 공법',
-    thumb: im('construct_6_img05'),
+    thumb: im('construct_6_img04'),
     blocks: [
       {
         type: 'text',
@@ -224,7 +224,7 @@ export const methods: Method[] = [
     title: '마이크로파일 상부정착공법(HNC)',
     short: '기초 콘크리트를 철거하지 않고 마이크로파일과 일체화하는 특허 공법',
     patent: { no: '제10-0982951호', name: '기시공된 기초 콘크리트체의 보강방법', registered: '2010-09-13', cert: '/img/patent/10-0982951.webp' },
-    thumb: im('civil_1_big'),
+    thumb: im('civilEngineering_1_img16'),
     blocks: [
       { type: 'video', title: '공법 영상', youtubeId: '2PX2wEMOWxA' },
       {
@@ -303,7 +303,7 @@ export const methods: Method[] = [
     title: '마이크로파일 마찰저항증대공법(FIP)',
     short: '응력구속구로 그라우트와의 부착력과 마찰저항을 높이는 특허 공법',
     patent: { no: '제10-2054157호', name: '응력 구속구가 구비된 마이크로 파일과 마찰 저항이 향상된 마이크로 파일 기초 및 그 시공방법', registered: '2019-12-04', cert: '/img/patent/10-2054157.webp' },
-    thumb: im('civil_2_big'),
+    thumb: im('civil_2_04'),
     blocks: [
       { type: 'video', title: '공법 영상', youtubeId: 'ZpyIObkMhVk' },
       {
@@ -348,7 +348,7 @@ export const methods: Method[] = [
     slug: 'micropile',
     title: '마이크로파일공법',
     short: '좁은 곳에서도 소구경 천공기로 시공하는 압축·인장 겸용 파일',
-    thumb: im('civilEngineering_2_img08'),
+    thumb: im('civilEngineering_2_img05'),
     blocks: [
       {
         type: 'list',
@@ -431,7 +431,7 @@ export const methods: Method[] = [
     slug: 'press-in',
     title: '압입파일공법',
     short: '무소음·무진동으로 강관을 눌러 넣으며 지지력을 바로 확인하는 공법',
-    thumb: im('civilEngineering_4_img06'),
+    thumb: im('civilEngineering_4_img05'),
     blocks: [
       {
         type: 'list',

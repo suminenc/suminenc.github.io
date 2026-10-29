@@ -31,7 +31,7 @@ const { blocks, alt } = Astro.props;
       <div class:list={['figures', { single: b.cols === 1 }]} style={`--cols:${b.cols ?? 2}`}>
         {b.items.map((s) => (
           <figure>
-            <img src={s.img} alt={`${alt} ${s.cap}`} loading="lazy" decoding="async" />
+            <div class="fr"><img src={s.img} alt={`${alt} ${s.cap}`} loading="lazy" decoding="async" /></div>
             <figcaption>{s.cap}</figcaption>
           </figure>
         ))}
