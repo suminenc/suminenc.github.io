@@ -1,0 +1,62 @@
+---
+import type { Block } from '../data/methods';
+
+interface Props {
+  blocks: Block[];
+  alt: string;
+}
+
+const { blocks, alt } = Astro.props;
+---
+{blocks.map((b) => (
+  <section class="section">
+    <h2>{b.title}</h2>
+    {b.type === 'text' && (
+      <div class="text">{b.paras.map((p) => <p>{p}</p>)}</div>
+    )}
+    {b.type === 'list' && (
+      <ul class="dots">{b.items.map((t) => <li>{t}</li>)}</ul>
+    )}
+    {b.type === 'steps' && (
+      <div class:list={['steps', { 'cols-3': b.cols === 3, contain: b.contain }]}>
+        {b.items.map((s, i) => (
+          <figure>
+            <div class="ph"><img src={s.img} alt={`${alt} ${i + 1}. ${s.cap}`} loading="lazy" decoding="async" /></div>
+            <figcaption><b>{i + 1}.</b>{s.cap}</figcaption>
+          </figure>
+        ))}
+      </div>
+    )}
+    {b.type === 'figures' && (
+      <div class:list={['figures', { single: b.cols === 1 }]} style={`--cols:${b.cols ?? 2}`}>
+        {b.items.map((s) => (
+          <figure>
+            <img src={s.img} alt={`${alt} ${s.cap}`} loading="lazy" decoding="async" />
+            <figcaption>{s.cap}</figcaption>
+          </figure>
+        ))}
+      </div>
+    )}
+    {b.type === 'dl' && (
+      <dl class="dl">
+        {b.items.map((d) => (
+          <div>
+            <dt>{d.dt}</dt>
+            {d.dd && <dd>{d.dd.map((p) => <p>{p}</p>)}</dd>}
+          </div>
+        ))}
+      </dl>
+    )}
+    {b.type === 'video' && (
+      <div class="video">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${b.youtubeId}?rel=0`}
+          title={`${alt} 영상`}
+          loading="lazy"
+          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    )}
+  </section>
+))}

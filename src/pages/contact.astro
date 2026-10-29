@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { company, mapLinks } from '../data/site';
+---
+<BaseLayout title="문의" section="contact">
+  <div class="page-head">
+    <div class="inner">
+      <p class="crumb">문의</p>
+      <h1>공사 문의</h1>
+      <p class="lead">전화·문자·이메일로 편하게 연락 주십시오. 현장 사진이나 도면을 문자·이메일로 보내 주시면 더 빠르게 검토합니다.</p>
+    </div>
+  </div>
+  <div class="inner">
+    <section class="section">
+      <h2>연락처</h2>
+      <div class="btns contact-btns">
+        <a class="btn" href={`tel:${company.phone}`}>전화 걸기</a>
+        <a class="btn line" href={`sms:${company.phone}`}>문자 보내기</a>
+        <a class="btn line" href={`mailto:${company.email}`}>이메일 보내기</a>
+      </div>
+      <div class="info">
+        <div class="row"><b>대표</b><span>{company.ceo}</span></div>
+        <div class="row"><b>휴대폰</b><a href={`tel:${company.phone}`}>{company.phone}</a></div>
+        <div class="row"><b>이메일</b><a href={`mailto:${company.email}`}>{company.email}</a></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>오시는 길</h2>
+      <div class="info">
+        <div class="row"><b>주소</b><span>{company.address}</span></div>
+      </div>
+      <div class="btns map-btns">
+        <a class="btn line" href={mapLinks.naver} target="_blank" rel="noopener">네이버 지도에서 보기</a>
+        <a class="btn line" href={mapLinks.kakao} target="_blank" rel="noopener">카카오맵에서 보기</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .contact-btns { margin-bottom: 18px; }
+  .map-btns { margin-top: 16px; }
+</style>

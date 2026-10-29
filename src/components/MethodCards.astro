@@ -1,0 +1,21 @@
+---
+import type { Method } from '../data/methods';
+
+interface Props {
+  items: Method[];
+}
+
+const { items } = Astro.props;
+---
+<div class="cards">
+  {items.map((m) => (
+    <a class="card" href={`/method/${m.group}/${m.slug}/`}>
+      <div class="ph"><img src={m.thumb} alt="" loading="lazy" decoding="async" /></div>
+      <div class="body">
+        {m.patent && <span class="tag">특허 {m.patent.no}</span>}
+        <h3>{m.title}</h3>
+        <p>{m.short}</p>
+      </div>
+    </a>
+  ))}
+</div>

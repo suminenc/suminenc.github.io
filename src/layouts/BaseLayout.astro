@@ -1,0 +1,93 @@
+---
+import { company, nav } from '../data/site';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  section?: string;
+}
+
+const { title, description = company.summary, section } = Astro.props;
+const pageTitle = title ? `${title} | ${company.name}` : `${company.name} | 구조보강 · 소구경파일`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{pageTitle}</title>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content={pageTitle}>
+  <meta property="og:description" content={description}>
+  <meta property="og:image" content={new URL('/assets/symbol.png', Astro.site)}>
+  <meta property="og:url" content={canonical}>
+  <link rel="icon" type="image/png" href="/assets/favicon.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="inner header-inner">
+      <a class="brand" href="/" aria-label={`${company.name} 첫 화면`}>
+        <img src="/assets/symbol.png" alt="" width="1315" height="1196">
+        <span class="brand-text">
+          <span class="ko">{company.name}</span>
+          <span class="en">{company.nameEn}</span>
+        </span>
+      </a>
+      <button class="menu-btn" type="button" aria-label="메뉴" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="site-nav" class="site-nav">
+        <ul>
+          {nav.map((n) => (
+            <li><a href={n.href} class={section === n.key ? 'on' : undefined}>{n.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer class="site-footer">
+    <div class="inner">
+      <p class="f-name">{company.name} <span>{company.nameEn}</span></p>
+      <p>대표 {company.ceo} · 휴대폰 <a href={`tel:${company.phone}`}>{company.phone}</a> · 이메일 <a href={`mailto:${company.email}`}>{company.email}</a></p>
+      <p>{company.address}</p>
+      <p class="copy">© 2026 {company.name}</p>
+    </div>
+  </footer>
+
+  <script>
+    // 휴대폰 메뉴 열고 닫기
+    const btn = document.querySelector<HTMLButtonElement>('.menu-btn');
+    const navEl = document.getElementById('site-nav');
+    btn?.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', String(open));
+      navEl?.classList.toggle('open', open);
+    });
+
+    // 영문 줄 폭을 국문 폭에 맞춘다(CI 규칙)
+    document.fonts.ready.then(() => {
+      const ko = document.querySelector<HTMLElement>('.brand .ko');
+      const en = document.querySelector<HTMLElement>('.brand .en');
+      if (!ko || !en) return;
+      let fs = parseFloat(getComputedStyle(en).fontSize);
+      for (let i = 0; i < 6; i++) {
+        fs *= ko.getBoundingClientRect().width / en.getBoundingClientRect().width;
+        en.style.fontSize = fs + 'px';
+      }
+    });
+  </script>
+</body>
+</html>

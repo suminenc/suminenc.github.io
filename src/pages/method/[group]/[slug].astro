@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import MethodBlocks from '../../../components/MethodBlocks.astro';
+import { byGroup, groups, methods, type Method } from '../../../data/methods';
+import { company } from '../../../data/site';
+
+export function getStaticPaths() {
+  return methods.map((m) => ({ params: { group: m.group, slug: m.slug }, props: { m } }));
+}
+
+const { m } = Astro.props as { m: Method };
+const g = groups[m.group];
+const others = byGroup(m.group).filter((o) => o.slug !== m.slug);
+---
+<BaseLayout title={m.title} description={`${m.title} — ${m.short}`} section={m.group}>
+  <div class="page-head">
+    <div class="inner">
+      <p class="crumb"><a href={`/method/${m.group}/`}>{g.title}</a></p>
+      <h1>{m.title}</h1>
+      {m.patent && <a class="patent-tag" href="/patent/">대표 보유 특허 {m.patent.no}</a>}
+      <p class="lead">{m.short}</p>
+    </div>
+  </div>
+  <div class="inner">
+    <MethodBlocks blocks={m.blocks} alt={m.title} />
+
+    <section class="section">
+      <h2>{g.title}의 다른 공법</h2>
+      <ul class="other-links">
+        {others.map((o) => <li><a href={`/method/${o.group}/${o.slug}/`}>{o.title}</a></li>)}
+      </ul>
+    </section>
+
+    <section class="section ask">
+      <p>이 공법으로 공사를 검토하고 계시면 편하게 연락 주십시오.</p>
+      <div class="btns">
+        <a class="btn" href={`tel:${company.phone}`}>전화 걸기</a>
+        <a class="btn line" href="/contact/">문의 방법 보기</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .other-links { display: flex; flex-wrap: wrap; gap: 10px; }
+  .other-links a { display: block; border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; text-decoration: none; font-weight: 500; }
+  .other-links a:hover { background: var(--soft); }
+  .ask { background: var(--soft); border-radius: 12px; padding: 24px; }
+  .ask p { font-weight: 500; color: var(--navy); margin-bottom: 14px; }
+</style>

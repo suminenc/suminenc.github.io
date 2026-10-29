@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import MethodCards from '../../../components/MethodCards.astro';
+import { byGroup, groups, type Method } from '../../../data/methods';
+
+export function getStaticPaths() {
+  return (Object.keys(groups) as Method['group'][]).map((group) => ({ params: { group } }));
+}
+
+const group = Astro.params.group as Method['group'];
+const g = groups[group];
+---
+<BaseLayout title={g.title} description={g.lead} section={group}>
+  <div class="page-head">
+    <div class="inner">
+      <p class="crumb">공법 소개</p>
+      <h1>{g.title}</h1>
+      <p class="lead">{g.lead}</p>
+    </div>
+  </div>
+  <div class="inner">
+    <section class="section">
+      <MethodCards items={byGroup(group)} />
+    </section>
+  </div>
+</BaseLayout>

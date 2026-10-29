@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { company } from '../data/site';
+import { patents } from '../data/methods';
+---
+<BaseLayout title="보유 특허" description={`${company.name} 대표 보유 특허 3건`} section="patent">
+  <div class="page-head">
+    <div class="inner">
+      <p class="crumb">보유 특허</p>
+      <h1>대표 보유 특허 3건</h1>
+      <p class="lead">특허권자 {company.ceo} · 특허청 등록</p>
+    </div>
+  </div>
+  <div class="inner">
+    {patents.map((m) => (
+      <section class="section patent">
+        <div class="p-text">
+          <h2>{m.title}</h2>
+          <div class="info">
+            <div class="row"><b>특허번호</b><span>{m.patent!.no}</span></div>
+            <div class="row"><b>발명의 명칭</b><span>{m.patent!.name}</span></div>
+            <div class="row"><b>등록일</b><span>{m.patent!.registered}</span></div>
+            <div class="row"><b>특허권자</b><span>{company.ceo}</span></div>
+          </div>
+          <a class="btn line" href={`/method/${m.group}/${m.slug}/`}>공법 자세히 보기</a>
+        </div>
+        <a class="cert" href={m.patent!.cert} target="_blank" rel="noopener">
+          <img src={m.patent!.cert} alt={`특허증 ${m.patent!.no}`} loading="lazy" decoding="async" width="1000" height="1151">
+        </a>
+      </section>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .patent { display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; padding-bottom: 40px; border-bottom: 1px solid var(--line); }
+  .patent .info { margin-bottom: 16px; }
+  .patent .info .row b { width: 96px; }
+  .cert { display: block; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 14px rgba(16,43,74,.08); }
+  @media (max-width: 760px) {
+    .patent { grid-template-columns: 1fr; }
+    .cert { max-width: 360px; }
+  }
+</style>
