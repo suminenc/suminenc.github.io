@@ -1,4 +1,5 @@
 // 카탈로그(A4 세로 20쪽) 구성 — 공법 글·그림은 methods.ts를 그대로 쓰고, 여기서는 쪽마다 무엇을 넣을지만 정한다.
+// 2쪽짜리 공법은 짝수 쪽에서 시작해 펼침면 한 장에 보이게 한다(print.astro가 검사).
 // block: methods.ts 의 blocks 순서(0부터), cols: 한 줄 칸 수, take: 그 안에서 고를 항목 번호(0부터), ratio: 사진 칸 비율(기본 3 / 2), split: 순서 목록을 두 단으로, keepNo: take로 고른 사진도 원래 번호 유지
 
 export type CatBlock = { block: number; cols?: number; take?: number[]; keepNo?: boolean; title?: string; ratio?: string; split?: boolean };
@@ -30,16 +31,12 @@ export const catalogPages: CatPage[] = [
     blocks: [{ block: 0 }, { block: 1, cols: 3 }, { block: 2 }, { block: 3, split: true }],
   },
   {
-    slug: 'hnc', part: '1/3',
-    blocks: [{ block: 1 }, { block: 2, cols: 3, ratio: '16 / 9' }, { block: 5, split: true }],
+    slug: 'hnc', part: '1/2',
+    blocks: [{ block: 1 }, { block: 2, cols: 6, ratio: '1 / 1' }, { block: 4, cols: 6, ratio: '1 / 1' }, { block: 5, split: true }],
   },
   {
-    slug: 'hnc', part: '2/3',
-    blocks: [{ block: 4, cols: 3 }, { block: 7, cols: 3, ratio: '16 / 10' }],
-  },
-  {
-    slug: 'hnc', part: '3/3',
-    blocks: [{ block: 6, cols: 3 }],
+    slug: 'hnc', part: '2/2',
+    blocks: [{ block: 6, cols: 4 }, { block: 7, cols: 3, ratio: '16 / 10' }],
   },
   {
     slug: 'fip', part: '1/2',
@@ -58,8 +55,12 @@ export const catalogPages: CatPage[] = [
     blocks: [{ block: 2, cols: 3, take: [3, 4, 5, 6, 7, 8, 9, 10, 11], keepNo: true, title: '시공 순서 (계속)' }],
   },
   {
-    slug: 'press-in',
-    blocks: [{ block: 0 }, { block: 1, cols: 2 }, { block: 2, cols: 4 }],
+    slug: 'press-in', part: '1/2',
+    blocks: [{ block: 0 }, { block: 1, cols: 2 }, { block: 2, cols: 2, take: [0, 1], keepNo: true }],
+  },
+  {
+    slug: 'press-in', part: '2/2',
+    blocks: [{ block: 2, cols: 2, take: [2, 3, 4, 5, 6, 7], keepNo: true, title: '시공 순서 (계속)' }],
   },
 ];
 

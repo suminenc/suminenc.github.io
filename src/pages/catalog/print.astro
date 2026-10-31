@@ -31,6 +31,18 @@ const sheets: Sheet[] = [
   { kind: 'back' },
 ];
 
+// 펼침면 규칙(대표님 2026-11-01): 한 공법은 2쪽을 넘지 않고, 2쪽이면 짝수 쪽(왼쪽)에서 시작해 펼친 두 쪽에 다 보이게.
+// 전체 쪽수는 책자 인쇄를 위해 4의 배수.
+{
+  const pages = new Map<string, number[]>();
+  sheets.forEach((s, i) => { if (s.kind === 'method') pages.set(s.m.slug, [...(pages.get(s.m.slug) ?? []), i + 1]); });
+  for (const [slug, ps] of pages) {
+    if (ps.length > 2) throw new Error(`카탈로그: ${slug}가 ${ps.length}쪽 — 2쪽을 넘으면 안 됨`);
+    if (ps.length === 2 && (ps[0] % 2 !== 0 || ps[1] !== ps[0] + 1)) throw new Error(`카탈로그: ${slug}가 ${ps.join('·')}쪽 — 짝수 쪽에서 시작하는 펼침면이어야 함`);
+  }
+  if (sheets.length % 4 !== 0) throw new Error(`카탈로그: 전체 ${sheets.length}쪽 — 4의 배수여야 함`);
+}
+
 // 목차: 공법마다 첫 쪽 번호
 const toc: { m: Method; page: number }[] = [];
 sheets.forEach((s, i) => {
@@ -144,7 +156,8 @@ const groupKeys = ['reinforce', 'pile'] as const;
                 <b>특허 {m.patent!.no}</b>
                 <span class="pm">{m.title}</span>
                 <span class="pn">{m.patent!.name}</span>
-                <span class="ps">{m.short}</span>
+                <span class="ps"><em>적용</em>{overview[m.slug].fit}</span>
+                <span class="ps"><em>특징</em>{overview[m.slug].point}</span>
                 <span class="pd">등록일 {m.patent!.registered} · 특허권자 {company.ceo}</span>
                 <span class="pg">자세한 내용 {String(toc.find((t) => t.m.slug === m.slug)!.page).padStart(2, '0')}쪽</span>
               </figcaption>
@@ -394,7 +407,8 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .certs figcaption b { color: #fff; background: var(--navy); align-self: flex-start; font-size: 8.5pt; padding: .4mm 2.4mm; border-radius: 1mm; }
   .certs .pm { font-size: 14pt; font-weight: 700; color: var(--navy); line-height: 1.35; margin-top: 1mm; }
   .certs .pn { font-size: 9.5pt; color: var(--ink); line-height: 1.55; }
-  .certs .ps { font-size: 9.5pt; color: var(--steel); font-weight: 500; }
+  .certs .ps { font-size: 9.5pt; color: var(--ink); line-height: 1.5; display: flex; gap: 2mm; }
+  .certs .ps em { flex: none; font-style: normal; font-size: 8pt; font-weight: 700; color: var(--steel); border: .3mm solid var(--steel); border-radius: 1mm; padding: 0 1.4mm; height: fit-content; margin-top: .4mm; }
   .certs .pd { font-size: 8.5pt; color: var(--muted); }
   .certs .pg { font-size: 8.5pt; color: var(--navy); font-weight: 700; }
 
