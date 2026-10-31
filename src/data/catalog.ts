@@ -1,4 +1,4 @@
-// 카탈로그(A4 세로) 구성 — 공법 글·그림은 methods.ts를 그대로 쓰고, 여기서는 쪽마다 무엇을 넣을지만 정한다.
+// 카탈로그(A4 세로 20쪽) 구성 — 공법 글·그림은 methods.ts를 그대로 쓰고, 여기서는 쪽마다 무엇을 넣을지만 정한다.
 // block: methods.ts 의 blocks 순서(0부터), cols: 한 줄 칸 수, take: 그 안에서 고를 항목 번호(0부터), ratio: 사진 칸 비율(기본 3 / 2)
 
 export type CatBlock = { block: number; cols?: number; take?: number[]; title?: string; ratio?: string };
@@ -6,8 +6,12 @@ export type CatPage = { slug: string; part?: string; blocks: CatBlock[] };
 
 export const catalogPages: CatPage[] = [
   {
-    slug: 'smart-frp',
-    blocks: [{ block: 0 }, { block: 1, cols: 4 }, { block: 2, cols: 4 }, { block: 3 }, { block: 4, cols: 8 }],
+    slug: 'smart-frp', part: '1/2',
+    blocks: [{ block: 0 }, { block: 1, cols: 2 }],
+  },
+  {
+    slug: 'smart-frp', part: '2/2',
+    blocks: [{ block: 2, cols: 4 }, { block: 3 }, { block: 4, cols: 4 }],
   },
   {
     slug: 'steel-plate',
@@ -26,20 +30,32 @@ export const catalogPages: CatPage[] = [
     blocks: [{ block: 0 }, { block: 1, cols: 5 }, { block: 2 }, { block: 3 }],
   },
   {
-    slug: 'hnc', part: '1/2',
-    blocks: [{ block: 1 }, { block: 2, cols: 6 }, { block: 6, cols: 6, take: [1, 2, 4, 7, 8, 11] }, { block: 5 }],
+    slug: 'hnc', part: '1/3',
+    blocks: [{ block: 1 }, { block: 2, cols: 3, ratio: '16 / 9' }, { block: 5 }],
   },
   {
-    slug: 'hnc', part: '2/2',
+    slug: 'hnc', part: '2/3',
     blocks: [{ block: 4, cols: 3 }, { block: 7, cols: 3, ratio: '16 / 10' }],
   },
   {
-    slug: 'fip',
-    blocks: [{ block: 1 }, { block: 2, cols: 5 }, { block: 4, cols: 5 }, { block: 5, cols: 3, ratio: '16 / 9' }],
+    slug: 'hnc', part: '3/3',
+    blocks: [{ block: 6, cols: 3 }],
   },
   {
-    slug: 'micropile',
-    blocks: [{ block: 0 }, { block: 1 }, { block: 2, cols: 4, take: [0, 2, 4, 5, 7, 9, 10, 11], title: '시공 사진' }],
+    slug: 'fip', part: '1/2',
+    blocks: [{ block: 1 }, { block: 2, cols: 5 }, { block: 4, cols: 3 }],
+  },
+  {
+    slug: 'fip', part: '2/2',
+    blocks: [{ block: 5, cols: 2 }],
+  },
+  {
+    slug: 'micropile', part: '1/2',
+    blocks: [{ block: 0 }, { block: 1 }, { block: 3 }],
+  },
+  {
+    slug: 'micropile', part: '2/2',
+    blocks: [{ block: 2, cols: 3 }],
   },
   {
     slug: 'press-in',
