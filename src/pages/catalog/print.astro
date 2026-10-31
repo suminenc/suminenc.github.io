@@ -6,7 +6,7 @@ import { catalogPages, overview, type CatBlock } from '../../data/catalog';
 
 const bySlug = (s: string) => methods.find((m) => m.slug === s)!;
 
-type CB = Block & { cols?: number; ratio?: string };
+type CB = Block & { cols?: number; ratio?: string; split?: boolean; no?: number[] };
 type Sheet =
   | { kind: 'cover' } | { kind: 'toc' } | { kind: 'about' } | { kind: 'patent' } | { kind: 'overview' } | { kind: 'back' }
   | { kind: 'method'; m: Method; part?: string; blocks: CB[] };
@@ -15,9 +15,10 @@ type Sheet =
 const pick = (m: Method, c: CatBlock): CB => {
   const b = m.blocks[c.block];
   if (!b) throw new Error(`${m.slug} block ${c.block} 없음`);
-  const out: any = { ...b, cols: c.cols, ratio: c.ratio };
+  const out: any = { ...b, cols: c.cols, ratio: c.ratio, split: c.split };
   if (c.title) out.title = c.title;
   if (c.take && 'items' in b) out.items = c.take.map((i) => (b.items as any[])[i]);
+  if (c.take && c.keepNo) out.no = c.take;
   return out;
 };
 
@@ -53,9 +54,11 @@ const groupKeys = ['reinforce', 'pile'] as const;
     {s.kind === 'cover' && (
       <div class="cover-in">
         <div class="cover-top">
-          <img class="cover-symbol" src="/assets/symbol.png" alt="">
-          <p class="cover-ko">{company.name}</p>
-          <p class="cover-en">{company.nameEn}</p>
+          <div class="lockup-v cover-lockup">
+            <img class="lv-sym" src="/assets/symbol-crop.png" alt="">
+            <p class="cover-ko">{company.name}</p>
+            <p class="cover-en">{company.nameEn}</p>
+          </div>
         </div>
         <div class="cover-mid">
           <p class="cover-eyebrow">구조보강 · 소구경파일</p>
@@ -78,15 +81,19 @@ const groupKeys = ['reinforce', 'pile'] as const;
           <li><b>05</b>공법 한눈에 보기</li>
         </ol>
         {groupKeys.map((g) => (
-          <div class:list={['toc-group', g]}>
-            <p class="toc-g">{groups[g].title}</p>
-            <ol class="toc-list">
-              {toc.filter((t) => t.m.group === g).map((t) => (
-                <li><b>{String(t.page).padStart(2, '0')}</b>{t.m.title}{t.m.patent && <em>특허</em>}</li>
-              ))}
-            </ol>
-          </div>
+          <>
+            <i class="sp"></i>
+            <div class:list={['toc-group', g]}>
+              <p class="toc-g">{groups[g].title}</p>
+              <ol class="toc-list">
+                {toc.filter((t) => t.m.group === g).map((t) => (
+                  <li><b>{String(t.page).padStart(2, '0')}</b>{t.m.title}{t.m.patent && <em>특허</em>}</li>
+                ))}
+              </ol>
+            </div>
+          </>
         ))}
+        <i class="sp"></i>
         <p class="toc-note">{company.name}는 건축물 구조보강과 소구경파일 기초보강 공사를 합니다.<br>공법마다 실린 QR을 찍으면 홈페이지에서 영상과 자세한 내용을 볼 수 있습니다.</p>
       </div>
     )}
@@ -101,6 +108,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
           <p>대표가 보유한 특허 공법 3건(SMART섬유보강, 마이크로파일 상부정착 HNC, 마찰저항증대 FIP)으로 더 경제적이고 튼튼한 보강을 약속드립니다.</p>
           <p class="sign">{company.name} 대표 <b>{company.ceo}</b></p>
         </div>
+        <i class="sp"></i>
         <h3 class="sub">하는 일</h3>
         <div class="work">
           {groupKeys.map((g) => (
@@ -111,6 +119,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
             </div>
           ))}
         </div>
+        <i class="sp"></i>
         <h3 class="sub">사업장 정보</h3>
         <table class="info">
           <tr><th>상호</th><td>{company.name} ({company.nameEn})</td></tr>
@@ -192,13 +201,13 @@ const groupKeys = ['reinforce', 'pile'] as const;
                   {b.items.map((it, k) => (
                     <figure>
                       <div class="ph"><img src={it.img} alt=""></div>
-                      <figcaption>{b.type === 'steps' && <b>{k + 1}.</b>}{it.cap}</figcaption>
+                      <figcaption>{b.type === 'steps' && <b>{(b.no ? b.no[k] : k) + 1}.</b>}{it.cap}</figcaption>
                     </figure>
                   ))}
                 </div>
               )}
               {b.type === 'dl' && (
-                <dl class="dl">{b.items.map((d) => <div><dt>{d.dt}</dt>{d.dd && <dd>{d.dd.join(' ')}</dd>}</div>)}</dl>
+                <dl class:list={['dl', { two: b.split }]}>{b.items.map((d) => <div><dt>{d.dt}</dt>{d.dd && <dd>{d.dd.join(' ')}</dd>}</div>)}</dl>
               )}
             </div>
           ))}
@@ -209,9 +218,11 @@ const groupKeys = ['reinforce', 'pile'] as const;
     {s.kind === 'back' && (
       <div class="back-in">
         <div class="back-top">
-          <img class="back-symbol" src="/assets/symbol.png" alt="">
-          <p class="cover-ko">{company.name}</p>
-          <p class="cover-en">{company.nameEn}</p>
+          <div class="lockup-v back-lockup">
+            <img class="lv-sym" src="/assets/symbol-crop.png" alt="">
+            <p class="cover-ko">{company.name}</p>
+            <p class="cover-en">{company.nameEn}</p>
+          </div>
         </div>
         <div class="back-band">
           <table class="contact">
@@ -232,16 +243,69 @@ const groupKeys = ['reinforce', 'pile'] as const;
 ))}
 
 <script>
-  // 로고 영문 줄 폭을 국문 폭에 맞춘다(CI 규칙)
-  document.fonts.ready.then(() => {
-    document.querySelectorAll<HTMLElement>('.cover-en').forEach((en) => {
-      const ko = en.previousElementSibling as HTMLElement;
+  // 세로형 로고(CI v2.3 6쪽): 영문 폭 = 국문 폭, 심볼 폭 = 국문 폭 × 0.80, 심볼과 국문 사이 = 심볼 높이 × 0.16
+  // 심볼은 원본에서 보이는 부분만 자른 그림(1241×1160)
+  function lockups() {
+    document.querySelectorAll<HTMLElement>('.lockup-v').forEach((lv) => {
+      const sym = lv.querySelector<HTMLImageElement>('.lv-sym')!;
+      const ko = lv.querySelector<HTMLElement>('.cover-ko')!;
+      const en = lv.querySelector<HTMLElement>('.cover-en')!;
       let fs = parseFloat(getComputedStyle(en).fontSize);
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 8; i++) {
         fs *= ko.getBoundingClientRect().width / en.getBoundingClientRect().width;
         en.style.fontSize = fs + 'px';
       }
+      const kw = ko.getBoundingClientRect().width;
+      const sw = kw * 0.8, sh = (sw * 1160) / 1241;
+      sym.style.width = sw + 'px';
+      sym.style.height = sh + 'px';
+      sym.style.marginBottom = sh * 0.16 + 'px';
+      en.style.marginTop = parseFloat(getComputedStyle(ko).fontSize) * 0.22 + 'px';
     });
+  }
+
+  // 공법 쪽 아래 여백 줄이기: 남는 높이를 사진 줄마다 나눠 사진 칸을 키운다.
+  // 현장 사진(잘라 채움)은 세로가 가로의 1.1배까지, 도면(전체 보임)은 높이 25%까지만 키운다. 그래도 남으면 블록 사이(flex)에 나뉜다.
+  function fillMethods() {
+    document.querySelectorAll<HTMLElement>('.sheet.method .m-body').forEach((body) => {
+      const used = [...body.children].reduce((s, c) => s + (c as HTMLElement).offsetHeight, 0);
+      const gaps = parseFloat(getComputedStyle(body).rowGap) * (body.children.length - 1);
+      let free = body.clientHeight - parseFloat(getComputedStyle(body).paddingTop) - used - gaps - 2;
+      if (free <= 0) return;
+      const rows: { phs: HTMLElement[]; max: number }[] = [];
+      body.querySelectorAll<HTMLElement>('.grid').forEach((g) => {
+        const cols = parseInt(getComputedStyle(g).getPropertyValue('--c')) || 3;
+        const phs = [...g.querySelectorAll<HTMLElement>('.ph')];
+        const w = phs[0].getBoundingClientRect().width, h = phs[0].getBoundingClientRect().height;
+        const max = g.classList.contains('contain') ? h * 0.25 : Math.max(0, w * 1.1 - h);
+        for (let i = 0; i < phs.length; i += cols) rows.push({ phs: phs.slice(i, i + cols), max });
+      });
+      // 줄마다 같은 만큼(상한 안에서) 키운다
+      let left = free, open = rows.filter((r) => r.max > 0);
+      const add = new Map<object, number>();
+      while (left > 1 && open.length) {
+        const each = left / open.length;
+        open.forEach((r) => {
+          const cur = add.get(r) || 0, d = Math.min(each, r.max - cur);
+          add.set(r, cur + d); left -= d;
+        });
+        open = open.filter((r) => (add.get(r) || 0) < r.max - .5);
+      }
+      rows.forEach((r) => {
+        const d = add.get(r) || 0;
+        if (d > 0) r.phs.forEach((ph) => {
+          const h = ph.getBoundingClientRect().height;
+          ph.style.aspectRatio = 'auto';
+          ph.style.height = h + d + 'px';
+        });
+      });
+    });
+  }
+
+  document.fonts.ready.then(() => {
+    lockups();
+    fillMethods();
+    document.body.dataset.ready = '1';
   });
 </script>
 </body>
@@ -260,6 +324,9 @@ const groupKeys = ['reinforce', 'pile'] as const;
   @media print { html, body { background: #fff; } .sheet { margin: 0; } }
 
   .pad { padding: 20mm 18mm 0; }
+  /* 쪽 아래 여백 관리: 본문은 쪽 아래 선 6mm 위(274mm)까지 채운다. 남는 높이는 .sp 늘이개가 나눠 가진다 */
+  .toc .pad, .about .pad, .patent .pad, .overview .pad { height: 274mm; display: flex; flex-direction: column; }
+  .sp { display: block; flex: 1 1 0; min-height: 0; }
   .eyebrow { color: var(--steel); font-weight: 700; font-size: 9pt; letter-spacing: .18em; }
   .big { font-size: 24pt; color: var(--navy); line-height: 1.3; margin-top: 1mm; }
   .lead { color: var(--muted); font-size: 10.5pt; margin-top: 2mm; }
@@ -277,9 +344,12 @@ const groupKeys = ['reinforce', 'pile'] as const;
   /* 표지 */
   .cover-in, .back-in { height: 100%; display: flex; flex-direction: column; }
   .cover-top { padding: 34mm 22mm 0; display: flex; flex-direction: column; align-items: flex-start; }
-  .cover-symbol { width: 58mm; mix-blend-mode: multiply; }
-  .cover-ko { font-size: 30pt; font-weight: 700; color: var(--navy); line-height: 1; margin-top: 10mm; letter-spacing: -.01em; }
-  .cover-en { font-size: 9.6pt; color: var(--ink); margin-top: 2.6mm; line-height: 1; white-space: nowrap; }
+  .lockup-v { display: inline-flex; flex-direction: column; align-items: center; }
+  .lv-sym { display: block; mix-blend-mode: multiply; }
+  .cover-ko { font-weight: 700; color: var(--navy); line-height: 1; letter-spacing: -.01em; white-space: nowrap; }
+  .cover-en { font-size: 9.6pt; color: var(--ink); line-height: 1; white-space: nowrap; }
+  .cover-lockup .cover-ko { font-size: 40pt; }
+  .back-lockup .cover-ko { font-size: 26pt; }
   .cover-mid { padding: 26mm 22mm 0; flex: 1; }
   .cover-eyebrow { color: var(--steel); font-weight: 700; font-size: 12pt; }
   .cover-mid h1 { font-size: 27pt; line-height: 1.38; color: var(--navy); margin-top: 3mm; letter-spacing: -.01em; }
@@ -289,7 +359,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .cover-band li span { display: inline-block; width: 46mm; font-size: 9.5pt; font-weight: 400; color: #B9CCE0; }
 
   /* 차례 */
-  .toc-list li { display: flex; align-items: baseline; gap: 6mm; font-size: 12.5pt; font-weight: 500; padding: 3mm 0; border-bottom: .3mm solid var(--line); }
+  .toc-list li { display: flex; align-items: baseline; gap: 6mm; font-size: 12.5pt; font-weight: 500; padding: 2.9mm 0; border-bottom: .3mm solid var(--line); }
   .toc-list li b { width: 10mm; color: var(--steel); font-size: 12pt; }
   .toc-list li em { font-style: normal; font-size: 8.5pt; color: #fff; background: var(--navy); border-radius: 1mm; padding: .2mm 2mm; margin-left: 2mm; }
   .pad > .toc-list { margin-top: 12mm; }
@@ -300,21 +370,23 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .toc-note { margin-top: 14mm; color: var(--muted); font-size: 10pt; line-height: 1.8; }
 
   /* 회사 소개 */
-  .greet { margin-top: 8mm; font-size: 10.5pt; line-height: 1.85; }
-  .greet p + p { margin-top: 2.5mm; }
+  .greet { margin-top: 7.5mm; font-size: 11pt; line-height: 1.8; }
+  .greet p + p { margin-top: 5mm; }
   .greet .sign { margin-top: 5mm; color: var(--muted); }
   .greet .sign b { color: var(--navy); font-size: 13pt; margin-left: 2mm; }
   .work { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
-  .work-box { background: var(--soft); border-radius: 3mm; padding: 5mm 6mm; border-top: 1.2mm solid var(--steel); }
+  .work-box { background: var(--soft); border-radius: 3mm; padding: 6mm 7mm 6.5mm; border-top: 1.2mm solid var(--steel); }
   .work-box.pile { border-top-color: var(--navy); }
   .wb-t { font-size: 12pt; font-weight: 700; color: var(--navy); }
-  .wb-l { font-size: 9pt; color: var(--muted); margin: 1mm 0 3mm; line-height: 1.55; }
+  .wb-l { font-size: 9.6pt; color: var(--muted); margin: 1.5mm 0 4mm; line-height: 1.6; }
+  .work-box .dots { font-size: 10.5pt; }
+  .work-box .dots li + li { margin-top: 1.8mm; }
   .info, .contact { width: 100%; border-collapse: collapse; }
-  .info th, .info td { text-align: left; padding: 2.4mm 0; border-bottom: .3mm solid var(--line); vertical-align: top; }
+  .info th, .info td { text-align: left; padding: 2.5mm 0; font-size: 10.2pt; border-bottom: .3mm solid var(--line); vertical-align: top; }
   .info th { width: 24mm; color: var(--muted); font-weight: 500; }
 
   /* 특허 */
-  .certs { display: flex; flex-direction: column; gap: 6mm; margin-top: 7mm; }
+  .certs { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 6mm; margin-top: 7mm; }
   .certs figure { display: grid; grid-template-columns: 50mm 1fr; gap: 8mm; align-items: center; padding-bottom: 6mm; border-bottom: .3mm solid var(--line); }
   .certs figure:last-child { border-bottom: 0; }
   .certs img { border: .3mm solid var(--line); box-shadow: 0 1mm 3mm rgba(16,43,74,.12); }
@@ -327,11 +399,11 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .certs .pg { font-size: 8.5pt; color: var(--navy); font-weight: 700; }
 
   /* 공법 한눈에 보기 */
-  .ov { margin-top: 9mm; }
+  .ov { margin-top: 9mm; flex: 1; display: flex; flex-direction: column; }
   .ov-g { display: inline-block; color: #fff; font-weight: 700; font-size: 10pt; padding: .8mm 4mm; border-radius: 1mm; margin-bottom: 2mm; }
   .ov.reinforce .ov-g { background: var(--steel); }
   .ov.pile .ov-g { background: var(--navy); }
-  .ov table { width: 100%; border-collapse: collapse; }
+  .ov table { width: 100%; border-collapse: collapse; flex: 1; }
   .ov th { text-align: left; font-size: 8.5pt; color: var(--muted); font-weight: 500; padding: 1.6mm 2mm; border-bottom: .5mm solid var(--navy); }
   .ov td { font-size: 9.4pt; padding: 3.2mm 2mm; border-bottom: .3mm solid var(--line); vertical-align: top; }
   .ov td.ov-n { font-weight: 700; color: var(--navy); width: 56mm; }
@@ -347,8 +419,10 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .m-head h2 small { font-size: 11pt; font-weight: 400; opacity: .75; }
   .m-patent { display: inline-block; margin-top: 2mm; background: #fff; color: var(--navy); font-size: 8.5pt; font-weight: 700; border-radius: 1mm; padding: .3mm 2.4mm; }
   .m-short { margin-top: 2mm; font-size: 10pt; opacity: .92; }
-  .m-body { padding: 6mm 18mm 0; }
-  .blk + .blk { margin-top: 5.5mm; }
+  .method { display: flex; flex-direction: column; }
+  /* 공법 쪽: 본문은 쪽 아래 선 6mm 위까지. 사진을 먼저 키우고(fill 스크립트), 남는 높이는 블록 사이에 나눈다 */
+  .m-body { padding: 6mm 18mm 0; flex: 1; min-height: 0; margin-bottom: 23mm; display: flex; flex-direction: column; gap: 5.5mm; }
+  .blk + .blk { margin-top: auto; }
   .blk h3 { font-size: 11pt; color: var(--navy); padding-left: 2.6mm; border-left: 1mm solid var(--steel); line-height: 1.25; margin-bottom: 2.6mm; }
   .pile .blk h3 { border-left-color: var(--navy); }
   .txt p + p { margin-top: 1.5mm; }
@@ -363,6 +437,8 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .grid.figures figcaption { text-align: center; color: var(--muted); font-weight: 400; }
   .dl > div { padding: 1.3mm 0; border-top: .3mm solid var(--line); }
   .dl > div:last-child { border-bottom: .3mm solid var(--line); }
+  .dl.two { display: grid; grid-template-columns: 1fr 1fr; column-gap: 7mm; border-bottom: .3mm solid var(--line); }
+  .dl.two > div:last-child { border-bottom: 0; }
   .dl dt { font-weight: 700; color: var(--navy); font-size: 9.4pt; }
   .dl dd { font-size: 9pt; margin-top: .4mm; }
   .m-qr { position: absolute; right: 18mm; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 1.2mm; }
@@ -371,8 +447,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
 
   /* 뒤표지 */
   .back-top { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-  .back-top .cover-en { text-align: center; }
-  .back-symbol { width: 44mm; mix-blend-mode: multiply; }
+
   .back-band { background: var(--navy); color: #fff; padding: 14mm 22mm 20mm; display: flex; justify-content: space-between; align-items: flex-end; gap: 10mm; }
   .contact th, .contact td { text-align: left; padding: 1.6mm 0; font-size: 10.5pt; vertical-align: top; }
   .contact th { width: 22mm; color: #B9CCE0; font-weight: 400; }
