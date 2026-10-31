@@ -17,7 +17,7 @@ const others = byGroup(m.group).filter((o) => o.slug !== m.slug);
     <div class="inner">
       <p class="crumb"><a href={`/method/${m.group}/`}>{g.title}</a></p>
       <h1>{m.title}</h1>
-      {m.patent && <a class="patent-tag" href="/patent/">대표 보유 특허 {m.patent.no}</a>}
+      {m.patent && <a class="patent-tag" href="/patent/">보유 특허 {m.patent.no}</a>}
       <p class="lead">{m.short}</p>
     </div>
   </div>

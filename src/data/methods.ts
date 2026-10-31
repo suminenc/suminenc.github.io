@@ -87,7 +87,7 @@ export const methods: Method[] = [
   {
     group: 'reinforce',
     slug: 'steel-plate',
-    title: '철판보강공법',
+    title: '철판 보강공법',
     short: '강판을 앵커로 고정하고 에폭시를 주입·접착해 보·슬래브의 휨·전단 내력을 증진하는 공법',
     thumb: im('construct_3_img06'),
     blocks: [
@@ -124,7 +124,7 @@ export const methods: Method[] = [
   {
     group: 'reinforce',
     slug: 'steel-section',
-    title: 'H형강보강공법',
+    title: 'H형강 보강공법',
     short: 'H형강 강재로 보·기둥을 보강하거나 보조 지지점을 만들어 내력을 증진하는 공법',
     thumb: im('construct_4_img06'),
     blocks: [
@@ -367,7 +367,7 @@ export const methods: Method[] = [
   {
     group: 'pile',
     slug: 'micropile',
-    title: '마이크로파일공법',
+    title: '마이크로파일 공법',
     short: '직경 300mm 이하의 소구경 천공·강봉·그라우트로 압축·인장 하중을 지지하는 말뚝',
     thumb: im('civilEngineering_2_img05'),
     blocks: [
@@ -450,7 +450,7 @@ export const methods: Method[] = [
   {
     group: 'pile',
     slug: 'press-in',
-    title: '압입파일공법',
+    title: '압입파일 공법',
     short: '기존 구조물 하중을 반력으로 강관을 압입하는 무소음·무진동 기초 보강 공법',
     thumb: im('civilEngineering_4_img05'),
     blocks: [

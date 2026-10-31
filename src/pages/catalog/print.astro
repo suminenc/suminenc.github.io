@@ -75,11 +75,11 @@ const groupKeys = ['reinforce', 'pile'] as const;
           </div>
         </div>
         <div class="cover-mid">
-          <p class="cover-eyebrow">구조보강 · 소구경파일</p>
+          <p class="cover-eyebrow">구조보강<span>(철판, H형강, 탄소섬유)</span><br>소구경파일<span>(마이크로파일, 압입파일)</span></p>
           <h1>건물을 허물지 않고<br>더 튼튼하게 보강합니다.</h1>
         </div>
         <div class="cover-band">
-          <p class="band-tit">대표 보유 특허</p>
+          <p class="band-tit">보유 특허</p>
           <ul>{patents.map((m) => <li><span>특허 {m.patent!.no}</span>{m.title}</li>)}</ul>
         </div>
       </div>
@@ -91,7 +91,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
         <h2 class="big">차례</h2>
         <ol class="toc-list">
           <li><b>03</b>회사 소개</li>
-          <li><b>04</b>대표 보유 특허</li>
+          <li><b>04</b>보유 특허</li>
           <li><b>05</b>공법 한눈에 보기</li>
         </ol>
         {groupKeys.map((g) => (
@@ -148,7 +148,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
     {s.kind === 'patent' && (
       <div class="pad">
         <p class="eyebrow">PATENT</p>
-        <h2 class="big">대표 보유 특허 3건</h2>
+        <h2 class="big">보유 특허 3건</h2>
         <p class="lead">특허권자 {company.ceo} · 특허청 등록</p>
         <div class="certs">
           {patents.map((m) => (
@@ -198,7 +198,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
         <header class="m-head">
           <p class="m-group">{groups[s.m.group].title}</p>
           <h2>{s.m.title}{s.part && <small> ({s.part})</small>}</h2>
-          {s.m.patent && <p class="m-patent">대표 보유 특허 {s.m.patent.no}</p>}
+          {s.m.patent && <p class="m-patent">보유 특허 {s.m.patent.no}</p>}
           <p class="m-short">{s.m.short}</p>
           <div class="m-qr">
             <img src={`/img/qr/${s.m.slug}.svg`} alt="">
@@ -366,7 +366,8 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .cover-lockup .cover-ko { font-size: 40pt; }
   .back-lockup .cover-ko { font-size: 26pt; }
   .cover-mid { padding: 26mm 22mm 0; flex: 1; }
-  .cover-eyebrow { color: var(--steel); font-weight: 700; font-size: 12pt; }
+  .cover-eyebrow { color: var(--steel); font-weight: 700; font-size: 12pt; line-height: 1.6; }
+  .cover-eyebrow span { font-weight: 500; margin-left: 1mm; }
   .cover-mid h1 { font-size: 27pt; line-height: 1.38; color: var(--navy); margin-top: 3mm; letter-spacing: -.01em; }
   .cover-band { background: var(--navy); color: #fff; padding: 12mm 22mm 16mm; }
   .band-tit { font-size: 9pt; letter-spacing: .12em; color: #B9CCE0; font-weight: 700; margin-bottom: 4mm; }
