@@ -6,7 +6,7 @@ import { catalogPages, overview, type CatBlock } from '../../data/catalog';
 
 const bySlug = (s: string) => methods.find((m) => m.slug === s)!;
 
-type CB = Block & { cols?: number; ratio?: string; split?: boolean; no?: number[] };
+type CB = Block & { cols?: number; ratio?: string; split?: boolean | 3; no?: number[]; site?: boolean };
 type Sheet =
   | { kind: 'cover' } | { kind: 'toc' } | { kind: 'about' } | { kind: 'patent' } | { kind: 'overview' } | { kind: 'back' }
   | { kind: 'method'; m: Method; part?: string; blocks: CB[] };
@@ -19,6 +19,8 @@ const pick = (m: Method, c: CatBlock): CB => {
   if (c.title) out.title = c.title;
   if (c.take && 'items' in b) out.items = c.take.map((i) => (b.items as any[])[i]);
   if (c.take && c.keepNo) out.no = c.take;
+  // 시공 사진(현장 사진)은 카탈로그 전체에서 한 크기: 56×42mm(4:3), 한 줄 3장(대표님 2026-11-01). 늘리지 않는다.
+  if (b.type === 'steps' && !b.contain) { out.cols = 3; out.ratio = '4 / 3'; out.site = true; }
   return out;
 };
 
@@ -210,7 +212,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
               {b.type === 'text' && <div class="txt">{b.paras.map((p) => <p>{p}</p>)}</div>}
               {b.type === 'list' && <ul class="dots">{b.items.map((t) => <li>{t}</li>)}</ul>}
               {(b.type === 'steps' || b.type === 'figures') && (
-                <div class:list={['grid', b.type, { contain: b.type === 'figures' || (b.type === 'steps' && b.contain) }]} style={`--c:${b.cols ?? 3};--r:${b.ratio ?? '3 / 2'}`}>
+                <div class:list={['grid', b.type, { contain: b.type === 'figures' || (b.type === 'steps' && b.contain), site: b.site }]} style={`--c:${b.cols ?? 3};--r:${b.ratio ?? '3 / 2'}`}>
                   {b.items.map((it, k) => (
                     <figure>
                       <div class="ph"><img src={it.img} alt=""></div>
@@ -220,7 +222,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
                 </div>
               )}
               {b.type === 'dl' && (
-                <dl class:list={['dl', { two: b.split }]}>{b.items.map((d) => <div><dt>{d.dt}</dt>{d.dd && <dd>{d.dd.join(' ')}</dd>}</div>)}</dl>
+                <dl class:list={['dl', { two: b.split === true, three: b.split === 3 }]}>{b.items.map((d) => <div><dt>{d.dt}</dt>{d.dd && <dd>{d.dd.join(' ')}</dd>}</div>)}</dl>
               )}
             </div>
           ))}
@@ -277,8 +279,8 @@ const groupKeys = ['reinforce', 'pile'] as const;
     });
   }
 
-  // 공법 쪽 아래 여백 줄이기: 남는 높이를 사진 줄마다 나눠 사진 칸을 키운다.
-  // 현장 사진(잘라 채움)은 세로가 가로의 1.1배까지, 도면(전체 보임)은 높이 25%까지만 키운다. 그래도 남으면 블록 사이(flex)에 나뉜다.
+  // 공법 쪽 아래 여백 줄이기: 남는 높이를 도면 줄마다 나눠 도면 칸을 높이 25%까지 키운다.
+  // 시공 사진(.site)은 크기를 고정하므로 키우지 않는다. 그래도 남으면 블록 사이(flex)에 나뉜다.
   function fillMethods() {
     document.querySelectorAll<HTMLElement>('.sheet.method .m-body').forEach((body) => {
       const used = [...body.children].reduce((s, c) => s + (c as HTMLElement).offsetHeight, 0);
@@ -286,7 +288,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
       let free = body.clientHeight - parseFloat(getComputedStyle(body).paddingTop) - used - gaps - 2;
       if (free <= 0) return;
       const rows: { phs: HTMLElement[]; max: number }[] = [];
-      body.querySelectorAll<HTMLElement>('.grid').forEach((g) => {
+      body.querySelectorAll<HTMLElement>('.grid:not(.site)').forEach((g) => {
         const cols = parseInt(getComputedStyle(g).getPropertyValue('--c')) || 3;
         const phs = [...g.querySelectorAll<HTMLElement>('.ph')];
         const w = phs[0].getBoundingClientRect().width, h = phs[0].getBoundingClientRect().height;
@@ -435,7 +437,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .m-short { margin-top: 2mm; font-size: 10pt; opacity: .92; }
   .method { display: flex; flex-direction: column; }
   /* 공법 쪽: 본문은 쪽 아래 선 6mm 위까지. 사진을 먼저 키우고(fill 스크립트), 남는 높이는 블록 사이에 나눈다 */
-  .m-body { padding: 6mm 18mm 0; flex: 1; min-height: 0; margin-bottom: 23mm; display: flex; flex-direction: column; gap: 5.5mm; }
+  .m-body { padding: 6mm 18mm 0; flex: 1; min-height: 0; margin-bottom: 23mm; display: flex; flex-direction: column; gap: 4.5mm; }
   .blk + .blk { margin-top: auto; }
   .blk h3 { font-size: 11pt; color: var(--navy); padding-left: 2.6mm; border-left: 1mm solid var(--steel); line-height: 1.25; margin-bottom: 2.6mm; }
   .pile .blk h3 { border-left-color: var(--navy); }
@@ -453,6 +455,10 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .dl > div:last-child { border-bottom: .3mm solid var(--line); }
   .dl.two { display: grid; grid-template-columns: 1fr 1fr; column-gap: 7mm; border-bottom: .3mm solid var(--line); }
   .dl.two > div:last-child { border-bottom: 0; }
+  .dl.three { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 6mm; border-bottom: .3mm solid var(--line); }
+  .dl.three > div:last-child { border-bottom: 0; }
+  .dl.three dt { font-size: 9pt; }
+  .dl.three dd { font-size: 8.5pt; line-height: 1.5; }
   .dl dt { font-weight: 700; color: var(--navy); font-size: 9.4pt; }
   .dl dd { font-size: 9pt; margin-top: .4mm; }
   .m-qr { position: absolute; right: 18mm; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 1.2mm; }
