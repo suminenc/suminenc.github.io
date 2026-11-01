@@ -470,8 +470,8 @@ export const methods: Method[] = [
         type: 'figures',
         title: '공법 구성',
         items: [
-          { img: im('civilEngineering_4_img01_png'), cap: '압입파일 개요' },
-          { img: im('civilEngineering_4_img02_png'), cap: '압입파일 개요' },
+          { img: im('civilEngineering_4_img01_png'), cap: '압입 장치 구성(유압잭·누름판·강봉)' },
+          { img: im('civilEngineering_4_img02_png'), cap: '시공 단계(코어 천공 → 강관 관입 → 정착판 설치)' },
         ],
       },
       {

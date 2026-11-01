@@ -213,7 +213,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
             <div class:list={['blk', { tall: b.tall }]}>
               <h3>{b.title}</h3>
               {b.type === 'text' && <div class="txt">{b.paras.map((p) => <p>{p}</p>)}</div>}
-              {b.type === 'list' && <ul class="dots">{b.items.map((t) => <li>{t}</li>)}</ul>}
+              {b.type === 'list' && <ul class:list={['dots', { two: b.split === true }]}>{b.items.map((t) => <li>{t}</li>)}</ul>}
               {(b.type === 'steps' || b.type === 'figures') && (
                 <div class:list={['grid', b.type, { contain: b.type === 'figures' || (b.type === 'steps' && b.contain), site: b.site }]} style={`--c:${b.cols ?? 3};--r:${b.ratio ?? '3 / 2'}`}>
                   {b.items.map((it, k) => (
@@ -443,7 +443,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .m-short { margin-top: 2mm; font-size: 10pt; opacity: .92; }
   .method { display: flex; flex-direction: column; }
   /* 공법 쪽: 본문은 쪽 아래 선 6mm 위까지. 사진을 먼저 키우고(fill 스크립트), 남는 높이는 블록 사이에 나눈다 */
-  .m-body { padding: 6mm 18mm 0; flex: 1; min-height: 0; margin-bottom: 23mm; display: flex; flex-direction: column; gap: 4.5mm; }
+  .m-body { padding: 9mm 18mm 0; flex: 1; min-height: 0; margin-bottom: 26mm; display: flex; flex-direction: column; gap: 4mm; }
   .brow + .brow { margin-top: auto; }
   /* 한 줄에 블록 둘(좌우 배열, beside). tall 블록은 그림이 줄 높이를 채운다 */
   .brow { display: grid; grid-template-columns: var(--w, 1fr); column-gap: 6mm; }
@@ -452,26 +452,29 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .blk.tall figcaption { flex: none; }
   .blk.tall .ph { flex: 1; aspect-ratio: auto; min-height: 0; position: relative; }
   .blk.tall .ph img { position: absolute; inset: 1mm; width: calc(100% - 2mm); height: calc(100% - 2mm); }
-  .blk h3 { font-size: 11pt; color: var(--navy); padding-left: 2.6mm; border-left: 1mm solid var(--steel); line-height: 1.25; margin-bottom: 2.6mm; }
+  .blk h3 { font-size: 11pt; color: var(--navy); padding-left: 2.6mm; border-left: 1mm solid var(--steel); line-height: 1.25; margin-bottom: 2.2mm; }
   .pile .blk h3 { border-left-color: var(--navy); }
   .txt p + p { margin-top: 1.5mm; }
+  .dots.two { columns: 2; column-gap: 7mm; }
+  .dots.two li { break-inside: avoid; margin-bottom: 1mm; }
+  .dots.two li + li { margin-top: 0; }
   .grid { display: grid; grid-template-columns: repeat(var(--c), 1fr); gap: 2.6mm; }
   .grid figure { border: .3mm solid var(--line); border-radius: 1.6mm; overflow: hidden; display: flex; flex-direction: column; }
   .grid .ph { aspect-ratio: var(--r); background: var(--soft); overflow: hidden; }
   .grid .ph img { width: 100%; height: 100%; object-fit: cover; }
   .grid.contain .ph { background: #fff; padding: 1mm; }
   .grid.contain .ph img { object-fit: contain; }
-  .grid figcaption { flex: 1; font-size: 8pt; font-weight: 500; line-height: 1.4; padding: 1.4mm 2mm 1.8mm; border-top: .3mm solid var(--line); }
+  .grid figcaption { flex: 1; font-size: 8pt; font-weight: 500; line-height: 1.4; padding: 1.1mm 2mm 1.4mm; border-top: .3mm solid var(--line); }
   .grid figcaption b { color: var(--steel); margin-right: 1mm; }
   .grid.figures figcaption { text-align: center; color: var(--muted); font-weight: 400; }
-  .dl > div { padding: 1.3mm 0; border-top: .3mm solid var(--line); }
+  .dl > div { padding: 1.1mm 0; border-top: .3mm solid var(--line); }
   .dl > div:last-child { border-bottom: .3mm solid var(--line); }
   .dl.two { display: grid; grid-template-columns: 1fr 1fr; column-gap: 7mm; border-bottom: .3mm solid var(--line); }
   .dl.two > div:last-child { border-bottom: 0; }
   .dl.three { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 6mm; border-bottom: .3mm solid var(--line); }
   .dl.three > div:last-child { border-bottom: 0; }
   .dl.three dt { font-size: 9pt; }
-  .dl.three dd { font-size: 8.5pt; line-height: 1.45; }
+  .dl.three dd { font-size: 8.5pt; line-height: 1.4; }
   .dl dt { font-weight: 700; color: var(--navy); font-size: 9.4pt; }
   .dl dd { font-size: 9pt; margin-top: .4mm; }
   .m-qr { position: absolute; right: 18mm; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 1.2mm; }

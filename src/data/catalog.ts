@@ -12,7 +12,7 @@ export const catalogPages: CatPage[] = [
   },
   {
     slug: 'smart-frp', part: '2/2',
-    blocks: [{ block: 2, cols: 2 }, { block: 4, cols: 4, ratio: '16 / 9', title: '탄소판 + 탄소섬유시트 시공 순서 (휨·전단 동시 보강)' }],
+    blocks: [{ block: 2, cols: 2, ratio: '1.75 / 1' }, { block: 4, cols: 4, ratio: '1.9 / 1', title: '탄소판 + 탄소섬유시트 시공 순서 (휨·전단 동시 보강)' }],
   },
   {
     slug: 'steel-plate',
@@ -28,11 +28,11 @@ export const catalogPages: CatPage[] = [
   },
   {
     slug: 'carbon-plate',
-    blocks: [{ block: 0 }, { block: 1 }, { block: 2 }, { block: 3, split: true }],
+    blocks: [{ block: 0 }, { block: 1 }, { block: 2, split: true }, { block: 3, split: true }],
   },
   {
     slug: 'hnc', part: '1/2',
-    blocks: [{ block: 1 }, { block: 4, ratio: '2.1 / 1', take: [0, 2, 4, 1, 3, 5] }, { block: 2, ratio: '1.35 / 1', w: '2.6fr 1fr' }, { block: 3, beside: true, tall: true }],
+    blocks: [{ block: 1 }, { block: 4, ratio: '2.4 / 1', take: [0, 2, 4, 1, 3, 5] }, { block: 2, ratio: '1.55 / 1', w: '2.6fr 1fr' }, { block: 3, beside: true, tall: true }],
   },
   {
     slug: 'hnc', part: '2/2',
@@ -48,19 +48,19 @@ export const catalogPages: CatPage[] = [
   },
   {
     slug: 'micropile', part: '1/2',
-    blocks: [{ block: 0 }, { block: 1 }, { block: 3, split: true }],
+    blocks: [{ block: 0, split: true }, { block: 1 }, { block: 2, take: [0, 1, 2, 3, 4, 5], keepNo: true }],
   },
   {
     slug: 'micropile', part: '2/2',
-    blocks: [{ block: 2 }],
+    blocks: [{ block: 3, split: true }, { block: 2, take: [6, 7, 8, 9, 10, 11], keepNo: true, title: '시공 순서 (계속)' }],
   },
   {
     slug: 'press-in', part: '1/2',
-    blocks: [{ block: 0 }, { block: 1, cols: 2, ratio: '1 / 1' }, { block: 2, take: [0, 1, 2], keepNo: true }],
+    blocks: [{ block: 0 }, { block: 2 }],
   },
   {
     slug: 'press-in', part: '2/2',
-    blocks: [{ block: 2, take: [3, 4, 5, 6, 7], keepNo: true, title: '시공 순서 (계속)' }, { block: 3 }],
+    blocks: [{ block: 1, cols: 2, ratio: '1.15 / 1' }, { block: 3 }],
   },
 ];
 
