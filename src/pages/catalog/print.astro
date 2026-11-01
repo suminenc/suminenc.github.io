@@ -6,7 +6,7 @@ import { catalogPages, overview, type CatBlock } from '../../data/catalog';
 
 const bySlug = (s: string) => methods.find((m) => m.slug === s)!;
 
-type CB = Block & { cols?: number; ratio?: string; split?: boolean | 3; no?: number[]; site?: boolean };
+type CB = Block & { cols?: number; ratio?: string; split?: boolean | 3; no?: number[]; site?: boolean; beside?: boolean; tall?: boolean; w?: string };
 type Sheet =
   | { kind: 'cover' } | { kind: 'toc' } | { kind: 'about' } | { kind: 'patent' } | { kind: 'overview' } | { kind: 'back' }
   | { kind: 'method'; m: Method; part?: string; blocks: CB[] };
@@ -15,12 +15,13 @@ type Sheet =
 const pick = (m: Method, c: CatBlock): CB => {
   const b = m.blocks[c.block];
   if (!b) throw new Error(`${m.slug} block ${c.block} 없음`);
-  const out: any = { ...b, cols: c.cols, ratio: c.ratio, split: c.split };
+  const out: any = { ...b, cols: c.cols, ratio: c.ratio, split: c.split, beside: c.beside, tall: c.tall, w: c.w };
   if (c.title) out.title = c.title;
   if (c.take && 'items' in b) out.items = c.take.map((i) => (b.items as any[])[i]);
   if (c.take && c.keepNo) out.no = c.take;
   // 시공 사진(현장 사진)은 카탈로그 전체에서 한 크기: 56×42mm(4:3), 한 줄 3장(대표님 2026-11-01). 늘리지 않는다.
-  if (b.type === 'steps' && !b.contain) { out.cols = 3; out.ratio = '4 / 3'; out.site = true; }
+  // fixed: 도면도 같은 크기로 고정(HNC, 대표님 2026-11-01)
+  if (c.fixed || (b.type === 'steps' && !b.contain)) { out.cols = 3; out.ratio = '4 / 3'; out.site = true; }
   return out;
 };
 
@@ -206,8 +207,10 @@ const groupKeys = ['reinforce', 'pile'] as const;
           </div>
         </header>
         <div class="m-body">
-          {s.blocks.map((b) => (
-            <div class="blk">
+          {s.blocks.reduce((rows, b) => (b.beside && rows.length ? rows[rows.length - 1].push(b) : rows.push([b]), rows), [] as CB[][]).map((row) => (
+          <div class="brow" style={row[0].w && `--w:${row[0].w}`}>
+          {row.map((b) => (
+            <div class:list={['blk', { tall: b.tall }]}>
               <h3>{b.title}</h3>
               {b.type === 'text' && <div class="txt">{b.paras.map((p) => <p>{p}</p>)}</div>}
               {b.type === 'list' && <ul class="dots">{b.items.map((t) => <li>{t}</li>)}</ul>}
@@ -225,6 +228,8 @@ const groupKeys = ['reinforce', 'pile'] as const;
                 <dl class:list={['dl', { two: b.split === true, three: b.split === 3 }]}>{b.items.map((d) => <div><dt>{d.dt}</dt>{d.dd && <dd>{d.dd.join(' ')}</dd>}</div>)}</dl>
               )}
             </div>
+          ))}
+          </div>
           ))}
         </div>
       </>
@@ -288,7 +293,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
       let free = body.clientHeight - parseFloat(getComputedStyle(body).paddingTop) - used - gaps - 2;
       if (free <= 0) return;
       const rows: { phs: HTMLElement[]; max: number }[] = [];
-      body.querySelectorAll<HTMLElement>('.grid:not(.site)').forEach((g) => {
+      body.querySelectorAll<HTMLElement>('.blk:not(.tall) .grid:not(.site)').forEach((g) => {
         const cols = parseInt(getComputedStyle(g).getPropertyValue('--c')) || 3;
         const phs = [...g.querySelectorAll<HTMLElement>('.ph')];
         const w = phs[0].getBoundingClientRect().width, h = phs[0].getBoundingClientRect().height;
@@ -439,7 +444,14 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .method { display: flex; flex-direction: column; }
   /* 공법 쪽: 본문은 쪽 아래 선 6mm 위까지. 사진을 먼저 키우고(fill 스크립트), 남는 높이는 블록 사이에 나눈다 */
   .m-body { padding: 6mm 18mm 0; flex: 1; min-height: 0; margin-bottom: 23mm; display: flex; flex-direction: column; gap: 4.5mm; }
-  .blk + .blk { margin-top: auto; }
+  .brow + .brow { margin-top: auto; }
+  /* 한 줄에 블록 둘(좌우 배열, beside). tall 블록은 그림이 줄 높이를 채운다 */
+  .brow { display: grid; grid-template-columns: var(--w, 1fr); column-gap: 6mm; }
+  .blk.tall { display: flex; flex-direction: column; }
+  .blk.tall .grid { flex: 1; grid-template-columns: 1fr; grid-template-rows: 1fr; min-height: 0; }
+  .blk.tall figcaption { flex: none; }
+  .blk.tall .ph { flex: 1; aspect-ratio: auto; min-height: 0; position: relative; }
+  .blk.tall .ph img { position: absolute; inset: 1mm; width: calc(100% - 2mm); height: calc(100% - 2mm); }
   .blk h3 { font-size: 11pt; color: var(--navy); padding-left: 2.6mm; border-left: 1mm solid var(--steel); line-height: 1.25; margin-bottom: 2.6mm; }
   .pile .blk h3 { border-left-color: var(--navy); }
   .txt p + p { margin-top: 1.5mm; }
@@ -459,7 +471,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .dl.three { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 6mm; border-bottom: .3mm solid var(--line); }
   .dl.three > div:last-child { border-bottom: 0; }
   .dl.three dt { font-size: 9pt; }
-  .dl.three dd { font-size: 8.5pt; line-height: 1.5; }
+  .dl.three dd { font-size: 8.5pt; line-height: 1.45; }
   .dl dt { font-weight: 700; color: var(--navy); font-size: 9.4pt; }
   .dl dd { font-size: 9pt; margin-top: .4mm; }
   .m-qr { position: absolute; right: 18mm; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 1.2mm; }

@@ -2,7 +2,7 @@
 // 2쪽짜리 공법은 짝수 쪽에서 시작해 펼침면 한 장에 보이게 한다(print.astro가 검사).
 // block: methods.ts 의 blocks 순서(0부터), cols: 한 줄 칸 수, take: 그 안에서 고를 항목 번호(0부터), ratio: 사진 칸 비율(기본 3 / 2), split: 순서 목록을 두 단(true) 또는 세 단(3)으로, keepNo: take로 고른 사진도 원래 번호 유지
 
-export type CatBlock = { block: number; cols?: number; take?: number[]; keepNo?: boolean; title?: string; ratio?: string; split?: boolean | 3 };
+export type CatBlock = { block: number; cols?: number; take?: number[]; keepNo?: boolean; title?: string; ratio?: string; split?: boolean | 3; fixed?: boolean; beside?: boolean; tall?: boolean; w?: string };
 export type CatPage = { slug: string; part?: string; blocks: CatBlock[] };
 
 export const catalogPages: CatPage[] = [
@@ -32,7 +32,7 @@ export const catalogPages: CatPage[] = [
   },
   {
     slug: 'hnc', part: '1/2',
-    blocks: [{ block: 1 }, { block: 2, cols: 6, ratio: '1 / 1' }, { block: 4, cols: 6, ratio: '1 / 1' }, { block: 5, split: true }],
+    blocks: [{ block: 1 }, { block: 4, ratio: '2.1 / 1', take: [0, 2, 4, 1, 3, 5] }, { block: 2, ratio: '1.35 / 1', w: '2.6fr 1fr' }, { block: 3, beside: true, tall: true }],
   },
   {
     slug: 'hnc', part: '2/2',
@@ -40,7 +40,7 @@ export const catalogPages: CatPage[] = [
   },
   {
     slug: 'fip', part: '1/2',
-    blocks: [{ block: 1 }, { block: 2, cols: 3 }, { block: 3, cols: 2 }],
+    blocks: [{ block: 1 }, { block: 2, cols: 2, ratio: '1.08 / 1', w: '1.6fr 1fr' }, { block: 3, beside: true, tall: true }],
   },
   {
     slug: 'fip', part: '2/2',
