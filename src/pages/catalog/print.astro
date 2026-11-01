@@ -78,6 +78,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
         <div class="cover-mid">
           <p class="cover-eyebrow">구조보강<span>(철판, H형강, 탄소섬유)</span><br>소구경파일<span>(마이크로파일, 압입파일)</span></p>
           <h1>공간은 그대로,<br>구조는 더 강하게.</h1>
+          <p class="cover-slogan">{company.slogan}</p>
         </div>
         <div class="cover-band">
           <p class="band-tit">보유 특허</p>
@@ -116,7 +117,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
     {s.kind === 'about' && (
       <div class="pad">
         <p class="eyebrow">ABOUT</p>
-        <h2 class="big">회사 소개</h2>
+        <div class="title-row"><h2 class="big">회사 소개</h2><p class="slogan">{company.slogan}</p></div>
         <div class="greet">
           <p>{company.name}는 건축물 구조보강과 소구경파일 기초보강 공사를 하는 회사입니다.</p>
           <p>오래된 건물, 하중이 늘어난 건물, 좁아서 큰 장비가 들어가지 못하는 현장일수록 정확한 공법 선택이 중요합니다. 현장 여건을 먼저 살피고, 알맞은 공법을 제안해 꼼꼼하게 시공하겠습니다.</p>
@@ -243,6 +244,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
             <p class="cover-ko">{company.name}</p>
             <p class="cover-en">{company.nameEn}</p>
           </div>
+          <p class="back-slogan">{company.slogan}</p>
         </div>
         <div class="back-band">
           <table class="contact">
@@ -373,6 +375,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .cover-mid { padding: 26mm 22mm 0; flex: 1; }
   .cover-eyebrow { color: var(--steel); font-weight: 700; font-size: 12pt; line-height: 1.6; }
   .cover-eyebrow span { font-weight: 500; margin-left: 1mm; }
+  .cover-slogan { margin-top: 6mm; padding-top: 4mm; border-top: .4mm solid var(--light); display: inline-block; font-size: 13pt; font-weight: 500; color: var(--steel); letter-spacing: .02em; }
   .cover-mid h1 { font-size: 27pt; line-height: 1.38; color: var(--navy); margin-top: 3mm; letter-spacing: -.01em; }
   .cover-band { background: var(--navy); color: #fff; padding: 12mm 22mm 16mm; }
   .band-tit { font-size: 9pt; letter-spacing: .12em; color: #B9CCE0; font-weight: 700; margin-bottom: 4mm; }
@@ -391,6 +394,9 @@ const groupKeys = ['reinforce', 'pile'] as const;
   .toc-note { margin-top: 14mm; color: var(--muted); font-size: 10pt; line-height: 1.8; }
 
   /* 회사 소개 */
+  /* 회사 소개 제목 줄: 왼쪽 제목, 오른쪽 보조 카피 */
+  .title-row { display: flex; justify-content: space-between; align-items: baseline; gap: 6mm; }
+  .slogan { font-size: 14pt; font-weight: 700; color: var(--steel); letter-spacing: -.01em; }
   .greet { margin-top: 7.5mm; font-size: 11pt; line-height: 1.8; }
   .greet p + p { margin-top: 5mm; }
   .greet .sign { margin-top: 5mm; color: var(--muted); }
@@ -483,6 +489,7 @@ const groupKeys = ['reinforce', 'pile'] as const;
 
   /* 뒤표지 */
   .back-top { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .back-slogan { margin-top: 14mm; font-size: 13pt; font-weight: 500; color: var(--steel); letter-spacing: .02em; }
 
   .back-band { background: var(--navy); color: #fff; padding: 14mm 22mm 20mm; display: flex; justify-content: space-between; align-items: flex-end; gap: 10mm; }
   .contact th, .contact td { text-align: left; padding: 1.6mm 0; font-size: 10.5pt; vertical-align: top; }

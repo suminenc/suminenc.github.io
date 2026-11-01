@@ -14,6 +14,7 @@ import { byGroup, groups } from '../data/methods';
   <div class="inner">
     <section class="section">
       <h2>인사말</h2>
+      <p class="slogan">{company.slogan}</p>
       <div class="text greeting">
         <p>{company.name}는 건축물 구조보강과 소구경파일 기초보강 공사를 하는 회사입니다.</p>
         <p>오래된 건물, 하중이 늘어난 건물, 좁아서 큰 장비가 들어가지 못하는 현장일수록 정확한 공법 선택이 중요합니다. 현장 여건을 먼저 살피고, 알맞은 공법을 제안해 꼼꼼하게 시공하겠습니다.</p>
@@ -48,7 +49,9 @@ import { byGroup, groups } from '../data/methods';
 </BaseLayout>
 
 <style>
+  .slogan { font-size: 24px; font-weight: 700; color: var(--steel); letter-spacing: -.01em; margin: -2px 0 18px; }
   .greeting { max-width: 760px; font-size: 16.5px; }
+  @media (max-width: 520px) { .slogan { font-size: 20px; } }
   .greeting p + p { margin-top: 18px; }
   .greeting .sign { margin-top: 18px; color: var(--muted); }
   .greeting .sign b { color: var(--navy); margin-left: 6px; font-size: 18px; }
