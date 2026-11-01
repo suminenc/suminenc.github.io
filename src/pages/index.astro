@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { company } from '../data/site';
+import { company, catalog } from '../data/site';
 import { byGroup, groups, patents } from '../data/methods';
 import MethodCards from '../components/MethodCards.astro';
 
@@ -16,6 +16,7 @@ const areas = (['reinforce', 'pile'] as const).map((g) => ({ key: g, ...groups[g
         <div class="btns">
           <a class="btn" href={`tel:${company.phone}`}>전화 걸기 {company.phone}</a>
           <a class="btn line" href="/contact/">문의 방법</a>
+          <a class="btn line" href={catalog.href} download={catalog.file}>카탈로그 받기 (PDF)</a>
         </div>
       </div>
       <img class="hero-symbol" src="/assets/symbol.png" alt="" width="1315" height="1196">

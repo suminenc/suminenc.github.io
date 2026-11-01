@@ -9,6 +9,9 @@ export const company = {
   summary: '수민이앤씨 — 구조보강(철판, H형강, 탄소섬유)과 소구경파일(마이크로파일, 압입파일) 공사. 보유 특허 3건.',
 };
 
+// 카탈로그 PDF(만드는 곳: /catalog/print/ → tools/web-images/shrink_catalog_pdf.py)
+export const catalog = { href: '/catalog/suminenc-catalog.pdf', file: '수민이앤씨_카탈로그.pdf' };
+
 // 지도 바로가기(주소 검색)
 const q = encodeURIComponent('서울 중랑구 신내역로3길 40-36');
 export const mapLinks = {

@@ -1,5 +1,5 @@
 ---
-import { company, nav } from '../data/site';
+import { company, nav, catalog } from '../data/site';
 import '../styles/global.css';
 
 interface Props {
@@ -63,6 +63,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       <p class="f-name">{company.name} <span>{company.nameEn}</span></p>
       <p>대표 {company.ceo} · 휴대폰 <a href={`tel:${company.phone}`}>{company.phone}</a> · 이메일 <a href={`mailto:${company.email}`}>{company.email}</a></p>
       <p>{company.address}</p>
+      <p><a href={catalog.href} download={catalog.file}>카탈로그 받기 (PDF)</a></p>
       <p class="copy">© 2026 {company.name}</p>
     </div>
   </footer>

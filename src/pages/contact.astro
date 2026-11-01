@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { company, mapLinks } from '../data/site';
+import { company, mapLinks, catalog } from '../data/site';
 ---
 <BaseLayout title="문의" section="contact">
   <div class="page-head">
@@ -17,6 +17,7 @@ import { company, mapLinks } from '../data/site';
         <a class="btn" href={`tel:${company.phone}`}>전화 걸기</a>
         <a class="btn line" href={`sms:${company.phone}`}>문자 보내기</a>
         <a class="btn line" href={`mailto:${company.email}`}>이메일 보내기</a>
+        <a class="btn line" href={catalog.href} download={catalog.file}>카탈로그 받기 (PDF)</a>
       </div>
       <div class="info">
         <div class="row"><b>대표</b><span>{company.ceo}</span></div>
