@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { company, mapLinks, catalog } from '../data/site';
 ---
-<BaseLayout title="문의" section="contact">
+<BaseLayout title="문의" description={`${company.name} 공사 문의 — 휴대폰 ${company.phone}, 이메일 ${company.email}. 구조보강·마이크로파일 현장 사진이나 도면을 보내 주시면 빠르게 검토합니다. 서울 중랑구 신내역로3길 40-36.`} section="contact">
   <div class="page-head">
     <div class="inner">
       <p class="crumb">문의</p>

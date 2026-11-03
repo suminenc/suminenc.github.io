@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { company } from '../data/site';
 import { byGroup, groups } from '../data/methods';
 ---
-<BaseLayout title="회사 소개" section="about">
+<BaseLayout title="회사 소개" description={`${company.name}는 서울 중랑구에 있는 구조보강·소구경파일 공사 회사입니다. 철판·H형강·탄소섬유 보강과 마이크로파일·압입파일 기초보강을 하며, 대표가 특허 공법 3건(SMART섬유보강, HNC, FIP)을 보유하고 있습니다.`} section="about">
   <div class="page-head">
     <div class="inner">
       <p class="crumb">회사 소개</p>
