@@ -28,4 +28,12 @@ export const works: Work[] = [
   { ym: "2022.04", title: "힐스테이트 관악뉴포레 103동·105동·106동 지상1층 보 구조보강공사", builder: "현대엔지니어링", method: 'reinforce' },
   { ym: "2022.03", title: "제주시 용담일동 아세아빌딩 마이크로파일공사", owner: "연강의료재단", method: 'pile' },
   { ym: "2022.01", title: "신사동 B쇼룸 증축공사 중 구조보강공사", builder: "경향건설", method: 'reinforce' },
+  { ym: "2021.11", title: "코캄 Sella2 이차전지 제조공장 신축공사 중 마이크로파일공사", owner: "코캄", builder: "이화공영", method: 'pile' },
+  { ym: "2021.10", title: "인천 고잔동 태주공업(주) 부속동 증축공사 중 구조보강공사", builder: "해창종합건설", method: 'reinforce' },
+  { ym: "2021.05", title: "광주 우산재개발 신축공사 중 주민공동시설 사우나(탕)구조보강공사", builder: "제이시건설", method: 'reinforce' },
+  { ym: "2021.04", title: "순천 성가롤로병원 별관 증축공사 중 구조보강공사", owner: "성가롤로병원", builder: "이화공영", method: 'reinforce' },
+  { ym: "2021.04", title: "셀트리온 글로벌 생명공학 연구센터 건설 중 마이크로파일공사", owner: "셀트리온", builder: "포스코건설", method: 'pile' },
+  { ym: "2021.03", title: "델피노 골프&리조트 소노펠리체 신축공사 중 구조보강공사", owner: "소노인터내셔널", builder: "대명건설", method: 'reinforce' },
+  { ym: "2021.01", title: "밝은빛유 천장설치 및 물탱크실 개선공사 중 보수보강공사", builder: "대한건설", method: 'reinforce' },
+  { ym: "2021.01", title: "유라테크빌딩 대수선공사 중 구조보강공사", builder: "성현이앤씨", method: 'reinforce' },
 ];
