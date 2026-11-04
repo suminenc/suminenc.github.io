@@ -12,8 +12,6 @@ export const works: Work[] = [
   { ym: "2025.12", title: "유한클로락스 향남공장 구조보강공사", owner: "유한클로락스", method: 'reinforce' },
   { ym: "2025.10", title: "보령 대천해수욕장 물놀이 감시탑(4망루) 마이크로파일공사", owner: "태광", method: 'pile' },
   { ym: "2025.03", title: "왕십리2동 구립노인복지시설 건립공사(건축, 기계) 중 헬리컬파일공사", builder: "신영토건", method: 'pile' },
-  { ym: "2024.08", title: "서교초등학교 아스콘바닥 지방침하 보강 공사", owner: "서교초등학교", method: 'reinforce', pub: true },
-  { ym: "2024.05", title: "청사 노후시설 개선(안전보강) 공사", owner: "민주평화통일자문회의사무처", method: 'reinforce', pub: true },
   { ym: "2024.05", title: "속초연수원(한국전력) 설악동 내진보강공사", owner: "한국전력", builder: "장원종합건설", method: 'reinforce', pub: true },
   { ym: "2024.03", title: "켄싱턴리조트 설악비치1 신축공사 중 부력앙카(소구경파일) 공사", builder: "이랜드건설", method: 'pile' },
 ];
