@@ -1,5 +1,4 @@
 ---
-// 숨김(2026-11-04 대표님): 실적은 다시 만들기로 함. 다시 열 때 파일 이름 앞 _ 를 빼고 site.ts 메뉴·sitemap·공법 페이지 링크를 되살린다.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { works } from '../data/works';
 import { company } from '../data/site';
@@ -9,7 +8,8 @@ const first = works.reduce((y, w) => Math.min(y, Number(w.ym.slice(0, 4))), 9999
 const total = works.length;
 const nRein = works.filter((w) => w.method === 'reinforce').length;
 const nPile = works.filter((w) => w.method === 'pile').length;
-const nPublic = works.filter((w) => w.orderer && !w.orderer.startsWith('OO')).length;
+const nPublic = works.filter((w) => w.pub).length;
+const who = (w: (typeof works)[number]) => [w.owner, w.builder].filter(Boolean).join(' / ');
 const years = [...new Set(works.map((w) => w.ym.slice(0, 4)))].sort((a, b) => b.localeCompare(a));
 const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith(y)) }));
 ---
@@ -22,7 +22,7 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
     <div class="inner">
       <p class="crumb">시공 경력</p>
       <h1>시공 경력</h1>
-      <p class="lead">{first}년부터 구조보강과 소구경파일 현장 {total}곳을 시공했습니다.</p>
+      <p class="lead">{first}년부터 구조보강과 소구경파일 현장 {total}곳에서 쌓은 시공 경력입니다.</p>
     </div>
   </div>
 
@@ -50,7 +50,7 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
             {years.map((y) => <option value={y}>{y}년</option>)}
           </select>
           <label class="sr-only" for="w-q">공사명 검색</label>
-          <input id="w-q" type="search" placeholder="공사명·발주처 검색 (예: 초등학교, 공장)" autocomplete="off">
+          <input id="w-q" type="search" placeholder="공사명·회사 이름 검색 (예: 학교, SK, 현대)" autocomplete="off">
         </div>
         <p class="count" aria-live="polite"><b id="w-n">{total}</b>곳</p>
       </div>
@@ -60,10 +60,10 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
           <h2>{y}<small><span class="yn">{items.length}</span>곳</small></h2>
           <ul class="list">
             {items.map((w) => (
-              <li data-m={w.method} data-q={`${w.title} ${w.orderer}`.toLowerCase()}>
+              <li data-m={w.method} data-q={`${w.title} ${who(w)}`.toLowerCase()}>
                 <span class="ym">{w.ym.slice(5)}월</span>
                 <span class="tt">{w.title}</span>
-                <span class="od">{w.orderer || '-'}</span>
+                <span class="od">{who(w)}</span>
                 <span class={`mt ${w.method}`}>{label[w.method]}</span>
                 <span class="bl">{w.blog ? <a href={w.blog} target="_blank" rel="noopener">사례 보기</a> : null}</span>
               </li>
@@ -72,7 +72,7 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
         </div>
       ))}
       <p class="empty" hidden>찾는 공사가 없습니다. 검색어를 바꿔 보세요.</p>
-      <p class="note">민간 발주처는 이름을 「OO」로 가렸습니다. 공사 금액은 싣지 않습니다.</p>
+      <p class="note">회사 이름은 발주자 / 원청사 순서입니다. 공사 금액은 싣지 않습니다.</p>
     </section>
 
     <section class="section">
@@ -105,7 +105,7 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
   .year { margin-top: 36px; }
   .year h2 { font-size: 22px; color: var(--navy); margin-bottom: 8px; }
   .year h2 small { font-size: 15px; color: var(--muted); font-weight: 400; margin-left: 8px; }
-  .list li { display: grid; grid-template-columns: 52px 1fr 180px 92px 76px; gap: 14px; align-items: center; padding: 12px 4px; border-bottom: 1px solid var(--line); font-size: 15.5px; }
+  .list li { display: grid; grid-template-columns: 52px 1fr 250px 92px 76px; gap: 14px; align-items: center; padding: 12px 4px; border-bottom: 1px solid var(--line); font-size: 15.5px; }
   .list .ym { color: var(--muted); font-variant-numeric: tabular-nums; }
   .list .tt { color: var(--ink); }
   .list .od { color: var(--muted); font-size: 14.5px; }

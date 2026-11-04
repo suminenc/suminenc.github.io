@@ -22,6 +22,13 @@ const g = groups[group];
     <section class="section">
       <MethodCards items={byGroup(group)} />
     </section>
+    <section class="section">
+      <a class="works-link" href={`/works/?m=${group}`}>{g.title} 시공 경력 보기 →</a>
+    </section>
   </div>
 </BaseLayout>
 
+<style>
+  .works-link { display: inline-flex; align-items: center; min-height: 48px; padding: 0 22px; border: 1.5px solid var(--navy); border-radius: 10px; color: var(--navy); font-weight: 700; text-decoration: none; }
+  .works-link:hover { background: var(--navy); color: #fff; }
+</style>
