@@ -17,7 +17,6 @@ export const works: Work[] = [
   { ym: "2023.12", title: "당진 LG화학 신축공사 중 구조보강공사", owner: "LG화학", builder: "현대엔지니어링", method: 'reinforce' },
   { ym: "2023.11", title: "사당동 리모델링공사 중 구조보강공사", builder: "디자인 이룸", method: 'reinforce' },
   { ym: "2023.10", title: "양양 기사문항 구조보강공사", builder: "보경건설", method: 'reinforce' },
-  { ym: "2023.10", title: "양양 기사문항 탄소섬유시트보강공사", builder: "보경건설", method: 'reinforce' },
   { ym: "2023.09", title: "고양지축 B-1BL 지하주차장 탄소섬유시트보강공사", builder: "우암건설", method: 'reinforce' },
   { ym: "2023.07", title: "전남 무안 오룡지구 42BL 구조보강공사", builder: "현대엔지니어링", method: 'reinforce' },
   { ym: "2023.06", title: "화성남양지구 저수조 H형강기둥보강공사", owner: "LH화성사업본부", method: 'reinforce', pub: true },
