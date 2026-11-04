@@ -23,4 +23,9 @@ export const works: Work[] = [
   { ym: "2023.05", title: "대곡-소사 지하유출수 처리시설 신축공사 중 마이크로파일공사", builder: "현대건설", method: 'pile' },
   { ym: "2023.02", title: "경기 고양시 일산서구 대화동 구조보강공사", owner: "피플몬스터", method: 'reinforce' },
   { ym: "2023.01", title: "경희여고 본관동 내진보강 공사 중 마이크로파일공사", builder: "서광이엔씨", method: 'pile' },
+  { ym: "2022.09", title: "송파동 구조보강공사", builder: "더비건설", method: 'reinforce' },
+  { ym: "2022.09", title: "고려대학교 제1의학관 증축공사 및 리모델링공사 중 구조보강공사", owner: "고려대학교", builder: "고덕건설", method: 'reinforce' },
+  { ym: "2022.04", title: "힐스테이트 관악뉴포레 103동·105동·106동 지상1층 보 구조보강공사", builder: "현대엔지니어링", method: 'reinforce' },
+  { ym: "2022.03", title: "제주시 용담일동 아세아빌딩 마이크로파일공사", owner: "연강의료재단", method: 'pile' },
+  { ym: "2022.01", title: "신사동 B쇼룸 증축공사 중 구조보강공사", builder: "경향건설", method: 'reinforce' },
 ];
