@@ -36,4 +36,11 @@ export const works: Work[] = [
   { ym: "2021.03", title: "델피노 골프&리조트 소노펠리체 신축공사 중 구조보강공사", owner: "소노인터내셔널", builder: "대명건설", method: 'reinforce' },
   { ym: "2021.01", title: "밝은빛유 천장설치 및 물탱크실 개선공사 중 보수보강공사", builder: "대한건설", method: 'reinforce' },
   { ym: "2021.01", title: "유라테크빌딩 대수선공사 중 구조보강공사", builder: "성현이앤씨", method: 'reinforce' },
+  { ym: "2020.09", title: "의정부 중앙2 주택재개발정비사업 중 헬리컬파일공사", builder: "롯데건설", method: 'pile' },
+  { ym: "2020.06", title: "에이스침대 경기광주점 리모델링공사 중 구조보강공사", owner: "에이스침대", builder: "포레스트건설", method: 'reinforce' },
+  { ym: "2020.04", title: "까뮤이스테이트 죽전 도시형생활주택 신축공사 중 구조보강공사", builder: "까뮤이앤씨", method: 'reinforce' },
+  { ym: "2020.02", title: "제일헬스사이언스(주) 첩부제제조소 증축 및 리모델링공사 중 구조보강공사", owner: "제일헬스사이언스", builder: "이화공영", method: 'reinforce' },
+  { ym: "2020.02", title: "광주 연제동 공동주택 신축사업 중 부문주 구조보강공사", builder: "현대엔지니어링", method: 'reinforce' },
+  { ym: "2020.01", title: "용인 성복동 공동주택 신축사업 중 마이크로파일공사", builder: "롯데건설", method: 'pile' },
+  { ym: "2020.01", title: "강동구 길동 근린생활시설 신축공사 중 SRP공사", builder: "우호건설", method: 'pile' },
 ];
