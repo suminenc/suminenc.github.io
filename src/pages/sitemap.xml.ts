@@ -8,6 +8,7 @@ export const GET: APIRoute = ({ site }) => {
     '/about/',
     ...Object.keys(groups).map((g) => `/method/${g}/`),
     ...methods.map((m) => `/method/${m.group}/${m.slug}/`),
+    '/works/',
     '/patent/',
     '/contact/',
   ];

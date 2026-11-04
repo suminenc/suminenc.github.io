@@ -24,6 +24,7 @@ export const nav = [
   { key: 'about', label: '회사 소개', href: '/about/' },
   { key: 'reinforce', label: '구조보강', href: '/method/reinforce/' },
   { key: 'pile', label: '소구경파일', href: '/method/pile/' },
+  { key: 'works', label: '시공 경력', href: '/works/' },
   { key: 'patent', label: '보유 특허', href: '/patent/' },
   { key: 'contact', label: '문의', href: '/contact/' },
 ];

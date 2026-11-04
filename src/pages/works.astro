@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { works } from '../data/works';
+import { company } from '../data/site';
+
+const label = { reinforce: '구조보강', pile: '소구경파일' } as const;
+const first = works.reduce((y, w) => Math.min(y, Number(w.ym.slice(0, 4))), 9999);
+const total = works.length;
+const nRein = works.filter((w) => w.method === 'reinforce').length;
+const nPile = works.filter((w) => w.method === 'pile').length;
+const nPublic = works.filter((w) => w.orderer && !w.orderer.startsWith('OO')).length;
+const years = [...new Set(works.map((w) => w.ym.slice(0, 4)))].sort((a, b) => b.localeCompare(a));
+const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith(y)) }));
+---
+<BaseLayout
+  title="시공 경력"
+  description={`${company.name} 시공 경력 — ${first}년부터 구조보강·소구경파일 현장 ${total}곳. 학교·관공서·공장·상가 등 연도별 공사 목록.`}
+  section="works"
+>
+  <div class="page-head">
+    <div class="inner">
+      <p class="crumb">시공 경력</p>
+      <h1>시공 경력</h1>
+      <p class="lead">{first}년부터 구조보강과 소구경파일 현장 {total}곳을 시공했습니다.</p>
+    </div>
+  </div>
+
+  <div class="inner">
+    <section class="section">
+      <div class="stats">
+        <div><b>{total}</b><span>전체 현장</span></div>
+        <div><b>{nRein}</b><span>구조보강</span></div>
+        <div><b>{nPile}</b><span>소구경파일</span></div>
+        <div><b>{nPublic}</b><span>공공기관</span></div>
+      </div>
+    </section>
+
+    <section class="section works">
+      <div class="filters">
+        <div class="tabs" role="tablist" aria-label="공법">
+          <button type="button" role="tab" data-m="" aria-selected="true">전체</button>
+          <button type="button" role="tab" data-m="reinforce" aria-selected="false">구조보강</button>
+          <button type="button" role="tab" data-m="pile" aria-selected="false">소구경파일</button>
+        </div>
+        <div class="pick">
+          <label class="sr-only" for="w-year">연도</label>
+          <select id="w-year">
+            <option value="">모든 연도</option>
+            {years.map((y) => <option value={y}>{y}년</option>)}
+          </select>
+          <label class="sr-only" for="w-q">공사명 검색</label>
+          <input id="w-q" type="search" placeholder="공사명·발주처 검색 (예: 초등학교, 공장)" autocomplete="off">
+        </div>
+        <p class="count" aria-live="polite"><b id="w-n">{total}</b>곳</p>
+      </div>
+
+      {byYear.map(({ y, items }) => (
+        <div class="year" data-year={y}>
+          <h2>{y}<small><span class="yn">{items.length}</span>곳</small></h2>
+          <ul class="list">
+            {items.map((w) => (
+              <li data-m={w.method} data-q={`${w.title} ${w.orderer}`.toLowerCase()}>
+                <span class="ym">{w.ym.slice(5)}월</span>
+                <span class="tt">{w.title}</span>
+                <span class="od">{w.orderer || '-'}</span>
+                <span class={`mt ${w.method}`}>{label[w.method]}</span>
+                <span class="bl">{w.blog ? <a href={w.blog} target="_blank" rel="noopener">사례 보기</a> : null}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      <p class="empty" hidden>찾는 공사가 없습니다. 검색어를 바꿔 보세요.</p>
+      <p class="note">민간 발주처는 이름을 「OO」로 가렸습니다. 공사 금액은 싣지 않습니다.</p>
+    </section>
+
+    <section class="section">
+      <div class="cta">
+        <p>비슷한 현장의 보강·기초 공사를 검토 중이신가요?</p>
+        <a class="btn" href="/contact/">문의하기</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
+  .stats div { background: var(--soft); border-radius: var(--radius); padding: 22px 20px; display: flex; flex-direction: column; gap: 4px; }
+  .stats b { font-size: 34px; color: var(--navy); line-height: 1.1; letter-spacing: -.02em; }
+  .stats span { color: var(--muted); font-size: 15px; }
+
+  .works { margin-top: 40px; }
+  .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding-bottom: 18px; border-bottom: 2px solid var(--navy); position: sticky; top: 76px; background: #fff; z-index: 5; padding-top: 12px; }
+  .tabs { display: flex; gap: 6px; }
+  .tabs button { border: 1.5px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 15px; cursor: pointer; }
+  .tabs button[aria-selected='true'] { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 700; }
+  .pick { display: flex; gap: 8px; flex: 1; min-width: 260px; }
+  .pick select, .pick input { font: inherit; font-size: 15px; border: 1.5px solid var(--line); border-radius: 10px; padding: 8px 12px; background: #fff; color: var(--ink); }
+  .pick input { flex: 1; min-width: 0; }
+  .count { margin-left: auto; color: var(--muted); font-size: 15px; white-space: nowrap; flex-shrink: 0; }
+  .year[hidden], .list li[hidden] { display: none; }
+  .count b { color: var(--navy); font-size: 18px; margin-right: 2px; }
+
+  .year { margin-top: 36px; }
+  .year h2 { font-size: 22px; color: var(--navy); margin-bottom: 8px; }
+  .year h2 small { font-size: 15px; color: var(--muted); font-weight: 400; margin-left: 8px; }
+  .list li { display: grid; grid-template-columns: 52px 1fr 180px 92px 76px; gap: 14px; align-items: center; padding: 12px 4px; border-bottom: 1px solid var(--line); font-size: 15.5px; }
+  .list .ym { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .list .tt { color: var(--ink); }
+  .list .od { color: var(--muted); font-size: 14.5px; }
+  .list .mt { justify-self: start; font-size: 13px; font-weight: 500; border-radius: 6px; padding: 2px 9px; }
+  .list .mt.reinforce { background: #E7EEF6; color: var(--steel); }
+  .list .mt.pile { background: #EEF0E4; color: #5B6326; }
+  .list .bl a { font-size: 14px; color: var(--steel); }
+  .empty { margin-top: 32px; color: var(--muted); }
+  .note { margin-top: 28px; color: var(--muted); font-size: 14px; }
+
+  .cta { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; background: var(--soft); border-radius: var(--radius); padding: 24px 28px; }
+  .cta p { font-size: 17px; font-weight: 500; color: var(--navy); }
+
+  @media (max-width: 860px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .list li { grid-template-columns: 44px 1fr auto; grid-template-areas: 'ym tt tt' '. od mt' '. bl bl'; gap: 4px 10px; }
+    .list .ym { grid-area: ym; }
+    .list .tt { grid-area: tt; }
+    .list .od { grid-area: od; }
+    .list .mt { grid-area: mt; }
+    .list .bl { grid-area: bl; }
+    .list .bl:empty { display: none; }
+  }
+  @media (max-width: 520px) {
+    .filters { top: 64px; }
+    .stats b { font-size: 28px; }
+    .stats div { padding: 16px; }
+    .tabs button { padding: 7px 12px; font-size: 14.5px; }
+    .pick { min-width: 100%; }
+    .count { margin-left: 0; }
+    .list li { font-size: 15px; }
+    .cta { padding: 20px; }
+  }
+</style>
+
+<script>
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('.tabs button')];
+  const yearSel = document.getElementById('w-year') as HTMLSelectElement;
+  const q = document.getElementById('w-q') as HTMLInputElement;
+  const n = document.getElementById('w-n')!;
+  const empty = document.querySelector<HTMLElement>('.empty')!;
+  const groups = [...document.querySelectorAll<HTMLElement>('.year')];
+  let m = new URLSearchParams(location.search).get('m') ?? '';
+  if (!['reinforce', 'pile'].includes(m)) m = '';
+
+  function apply() {
+    const y = yearSel.value;
+    const words = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    let total = 0;
+    for (const g of groups) {
+      let k = 0;
+      const yearOk = !y || g.dataset.year === y;
+      for (const li of g.querySelectorAll<HTMLElement>('li')) {
+        const ok = yearOk && (!m || li.dataset.m === m) && words.every((w) => li.dataset.q!.includes(w));
+        li.hidden = !ok;
+        if (ok) k++;
+      }
+      g.hidden = k === 0;
+      g.querySelector('.yn')!.textContent = String(k);
+      total += k;
+    }
+    n.textContent = String(total);
+    empty.hidden = total > 0;
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.m === m)));
+  }
+
+  tabs.forEach((t) => t.addEventListener('click', () => {
+    m = t.dataset.m ?? '';
+    const u = new URL(location.href);
+    if (m) u.searchParams.set('m', m); else u.searchParams.delete('m');
+    history.replaceState(null, '', u);
+    apply();
+  }));
+  yearSel.addEventListener('change', apply);
+  q.addEventListener('input', apply);
+  apply();
+</script>
