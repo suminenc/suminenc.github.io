@@ -4,7 +4,7 @@ export type Work = { ym: string; title: string; owner?: string; builder?: string
 
 export const works: Work[] = [
   { ym: "2026.09", title: "인천 가좌수소충전소 증설 중 마이크로파일공사", builder: "다원종합건설", method: 'pile' },
-  { ym: "2026.07", title: "동명빌딩 구조보강공사", owner: "동명여고", method: 'reinforce', pub: true },
+  { ym: "2026.07", title: "동명빌딩 구조보강공사", owner: "동명여고", method: 'reinforce' },
   { ym: "2026.07", title: "안성 도드람 리모델링공사 및 증축공사 중 압입파일공사", builder: "성주건설", method: 'pile' },
   { ym: "2026.05", title: "용인 죽전 극동스타클래스 3차타운하우스 지하 외벽 구조보강공사", owner: "극동스타클래스 3차타운하우스", method: 'reinforce' },
   { ym: "2026.04", title: "경기도 용인시 기흥구 상하동 마이크로파일공사", builder: "수목건설", method: 'pile' },
@@ -259,8 +259,6 @@ export const works: Work[] = [
   { ym: "2011.03", title: "울산SK에너지내 마이크로파일공사", owner: "SK에너지", builder: "SK건설", method: 'pile' },
   { ym: "2011.02", title: "KCC여주공장 내 마이크로파일공사", owner: "KCC", builder: "대성엔지니어링", method: 'pile' },
   { ym: "2011.02", title: "모산초등학교 강당 증축공사 중 마이크로파일 보강공사", owner: "충남교육청", builder: "한백건설", method: 'pile', pub: true },
-  { ym: "2011.02", title: "대원제약(주) 사옥 리모델링공사 중 구조보강공사", builder: "효정개발", method: 'reinforce' },
-  { ym: "2011.01", title: "논현동 리바트 매장 증축공사 중 구조보강공사", owner: "포스코에이엔씨", method: 'reinforce' },
   { ym: "2011.01", title: "울산SK에너지내 마이크로파일공사", owner: "SK에너지", builder: "SK건설", method: 'pile' },
   { ym: "2010.12", title: "광동제약(주) GMP공장 증축 기초토목공사 중 마이크로파일 기초보강공사", owner: "광동제약", method: 'pile' },
   { ym: "2010.11", title: "제일모직공장 내 마이크로파일공사", owner: "제일모직", builder: "그린종합건설", method: 'pile' },
