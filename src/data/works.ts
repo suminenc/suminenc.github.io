@@ -9,4 +9,7 @@ export const works: Work[] = [
   { ym: "2026.05", title: "용인 죽전 극동스타클래스 3차타운하우스 지하 외벽 구조보강공사", owner: "극동스타클래스 3차타운하우스", method: 'reinforce' },
   { ym: "2026.04", title: "경기도 용인시 기흥구 상하동 마이크로파일공사", builder: "수목건설", method: 'pile' },
   { ym: "2026.02", title: "신림동 구조보강공사", owner: "픽티티(picktiti)", builder: "스페이스매터", method: 'reinforce' },
+  { ym: "2025.12", title: "유한클로락스 향남공장 구조보강공사", owner: "유한클로락스", method: 'reinforce' },
+  { ym: "2025.10", title: "보령 대천해수욕장 물놀이 감시탑(4망루) 마이크로파일공사", owner: "태광", method: 'pile' },
+  { ym: "2025.03", title: "왕십리2동 구립노인복지시설 건립공사(건축, 기계) 중 헬리컬파일공사", builder: "신영토건", method: 'pile' },
 ];
