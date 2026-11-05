@@ -15,21 +15,21 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
 ---
 <BaseLayout
   title="시공 경력"
-  description={`${company.name} 시공 경력 — ${first}년부터 구조보강·소구경파일 현장 ${total}곳. 학교·관공서·공장·상가 등 연도별 공사 목록.`}
+  description={`${company.name} 시공 경력 — ${first}년부터 한길특수건설 시절을 포함해 구조보강·소구경파일 현장 ${total}곳 참여. 학교·관공서·공장·상가 등 연도별 공사 목록.`}
   section="works"
 >
   <div class="page-head">
     <div class="inner">
       <p class="crumb">시공 경력</p>
       <h1>시공 경력</h1>
-      <p class="lead">{first}년부터 구조보강과 소구경파일 현장 {total}곳에서 쌓은 시공 경력입니다.</p>
+      <p class="lead">{first}년부터 한길특수건설 시절을 포함해 구조보강·소구경파일 현장 {total}곳에 참여했습니다.</p>
     </div>
   </div>
 
   <div class="inner">
     <section class="section">
       <div class="stats">
-        <div><b>{total}</b><span>전체 현장</span></div>
+        <div><b>{total}</b><span>참여 현장</span></div>
         <div><b>{nRein}</b><span>구조보강</span></div>
         <div><b>{nPile}</b><span>소구경파일</span></div>
         <div><b>{nPublic}</b><span>공공기관</span></div>
