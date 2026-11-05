@@ -23,6 +23,7 @@ import { company, mapLinks, catalog } from '../data/site';
         <div class="row"><b>대표</b><span>{company.ceo}</span></div>
         <div class="row"><b>휴대폰</b><a href={`tel:${company.phone}`}>{company.phone}</a></div>
         <div class="row"><b>이메일</b><a href={`mailto:${company.email}`}>{company.email}</a></div>
+        <div class="row"><b>블로그</b><a href={company.blog} target="_blank" rel="noopener">blog.naver.com/suminenc</a></div>
       </div>
     </section>
 
