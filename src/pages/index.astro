@@ -8,10 +8,12 @@ import { works } from '../data/works';
 const areas = (['reinforce', 'pile'] as const).map((g) => ({ key: g, ...groups[g], items: byGroup(g) }));
 // 첫 화면 실적 숫자 — works.ts(시공 경력)에서 자동으로 센다(2026-11-05 대표님).
 // 한길특수건설 시절 현장이므로 「참여」로 쓰고 아래에 출처를 밝힌다(같은 날 대표님).
-const years = works.map((w) => Number(w.ym.slice(0, 4)));
-const first = Math.min(...years);
+// 현장 경력은 만 나이처럼 센다 — 한길 입사 2010-04-07부터 빌드한 날까지(만 16년, 햇수로는 17년. 대표님 11/05)
+const START = new Date('2010-04-07');
+const now = new Date();
+const fullYears = now.getFullYear() - START.getFullYear() - (now < new Date(now.getFullYear(), START.getMonth(), START.getDate()) ? 1 : 0);
 const stats = [
-  { n: `${Math.max(...years) - first}년`, t: '현장 경력', href: '/works/' },
+  { n: `${fullYears}년`, t: '현장 경력', href: '/works/' },
   { n: `${works.length}곳`, t: '참여 현장', href: '/works/' },
   { n: `${works.filter((w) => w.pub).length}곳`, t: '학교·관공서 공사', href: '/works/' },
   { n: `${patents.length}건`, t: '보유 특허 공법', href: '/patent/' },
