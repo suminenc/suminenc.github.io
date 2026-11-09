@@ -14,9 +14,10 @@ import { company, mapLinks, catalog } from '../data/site';
     <section class="section">
       <h2>연락처</h2>
       <div class="btns contact-btns">
-        <a class="btn" href={`tel:${company.phone}`}>전화 걸기</a>
+        <a class="btn call" href={`tel:${company.phone}`}>전화 걸기</a>
         <a class="btn line" href={`sms:${company.phone}`}>문자 보내기</a>
         <a class="btn line" href={`mailto:${company.email}`}>이메일 보내기</a>
+        <a class="btn line" href={company.blog} target="_blank" rel="noopener">네이버 블로그</a>
         <a class="btn line" href={catalog.href} download={catalog.file}>카탈로그 받기 (PDF)</a>
       </div>
       <div class="info">
@@ -42,5 +43,14 @@ import { company, mapLinks, catalog } from '../data/site';
 
 <style>
   .contact-btns { margin-bottom: 18px; }
+  /* 폰: 전화(1줄 전체) / 문자·이메일 / 블로그·카탈로그 — 2칸 격자로 크기 맞춤(11/09).
+     PC: 한 줄, 아래 연락처 상자와 같은 폭으로 늘려 양 끝을 맞춤 */
+  .btns.contact-btns { max-width: var(--read); flex-wrap: nowrap; }
+  .contact-btns .btn { flex: 1 1 auto; }
+  @media (max-width: 860px) {
+    .btns.contact-btns { display: grid; grid-template-columns: 1fr 1fr; }
+    .contact-btns .btn { padding: 0 10px; }
+    .contact-btns .call { grid-column: 1 / -1; }
+    }
   .map-btns { margin-top: 16px; }
 </style>
