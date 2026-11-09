@@ -87,12 +87,15 @@ const stats = [
   .hero-stats a:hover b { color: var(--steel); }
   .hero-note { margin: 12px 16px 0; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 12.5px; color: var(--muted); text-align: right; }
   .hero-symbol { width: 240px; flex: none; mix-blend-mode: multiply; }
-  /* 첫 화면 버튼 — 실적 상자와 같은 폭의 2칸 격자(11/09 대표님 「버튼 사이즈 정리」).
-     전화(1줄 전체) / 블로그·문의 방법(반씩) / 카탈로그(1줄 전체). 넓은 화면은 한 줄 */
+  /* 첫 화면 버튼 — 실적 상자와 같은 폭의 격자(11/09 대표님 「버튼 사이즈 정리」, 「PC는 언밸런스」).
+     폰: 전화(1줄 전체) / 블로그·문의 방법(반씩) / 카탈로그(1줄 전체)
+     PC: 전화(1줄 전체) / 블로그·문의 방법·카탈로그(3등분) */
   .btns.hero-btns { display: grid; grid-template-columns: 1fr 1fr; max-width: 560px; }
+  .hero-btns .btn { padding: 0 10px; }
   .hero-btns .call, .hero-btns .wide { grid-column: 1 / -1; }
-  @media (min-width: 1100px) {
-    .btns.hero-btns { display: flex; flex-wrap: nowrap; max-width: none; }
+  @media (min-width: 760px) {
+    .btns.hero-btns { grid-template-columns: repeat(3, 1fr); }
+    .hero-btns .wide { grid-column: auto; }
     }
   .area-lead { color: var(--muted); margin: -6px 0 16px; }
   .patent-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
