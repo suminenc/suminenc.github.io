@@ -13,15 +13,6 @@ const areas = (['reinforce', 'pile'] as const).map((g) => ({ key: g, ...groups[g
 const START = new Date('2010-04-07');
 const now = new Date();
 const fullYears = now.getFullYear() - START.getFullYear() - (now < new Date(now.getFullYear(), START.getMonth(), START.getDate()) ? 1 : 0);
-// 함께한 곳 — 시공 경력(works.ts)의 발주자·원청사 가운데 이름이 알려진 곳만 고름(2026-11-14 대표님).
-// 로고는 쓰지 않고 글자로만. works.ts에 없는 이름은 빌드 때 저절로 빠진다.
-const named = new Set(works.flatMap((w) => [w.owner, w.builder]).filter(Boolean) as string[]);
-const pick = (xs: string[]) => xs.filter((x) => named.has(x));
-const clients = {
-  owners: pick(['한국전력', 'LH', '한국은행', '한국석유공사', '방위사업청', '국립극장', '고려대학교', '삼성전자', 'SK에너지', 'S-OIL', 'LG화학', 'CJ제일제당', '셀트리온', '한화토탈', 'LS전선', 'KCC', '신라호텔', '강원랜드']),
-  builders: pick(['삼성물산', '현대건설', 'SK건설', 'GS건설', '대우건설', '롯데건설', '현대엔지니어링', '삼성엔지니어링', '코오롱글로벌', '한라건설', '신세계건설']),
-};
-const clientRest = named.size - clients.owners.length - clients.builders.length;
 const stats = [
   { n: fullYears, u: '년', t: '현장 경력', href: '/about/' },
   { n: works.length, u: '곳', t: '참여 현장', href: '/works/' },
@@ -52,17 +43,6 @@ const stats = [
         </div>
       </div>
       <img class="hero-symbol" src="/assets/symbol.png" alt="" width="1315" height="1196">
-    </div>
-  </section>
-
-  <section class="clients" aria-labelledby="clients-h">
-    <div class="inner">
-      <h2 id="clients-h">함께한 곳</h2>
-      <dl>
-        <div><dt>발주처</dt><dd><ul>{clients.owners.map((x) => <li>{x}</li>)}</ul></dd></div>
-        <div><dt>원청사</dt><dd><ul>{clients.builders.map((x) => <li>{x}</li>)}</ul></dd></div>
-      </dl>
-      <p class="clients-more"><a href="/works/">외 {clientRest}곳, 시공 경력 전체 보기 ›</a><span>※ 한길특수건설(주) 재직 시 참여한 현장 포함</span></p>
     </div>
   </section>
 
@@ -119,18 +99,6 @@ const stats = [
     .btns.hero-btns { grid-template-columns: repeat(3, 1fr); }
     .hero-btns .wide { grid-column: auto; }
     }
-  /* 함께한 곳 띠 */
-  .clients { background: var(--soft); border-bottom: 1px solid var(--line); padding: 30px 0 26px; }
-  .clients h2 { font-size: 20px; color: var(--navy); margin-bottom: 14px; }
-  .clients dl { display: grid; gap: 12px; margin: 0; }
-  .clients dl > div { display: grid; grid-template-columns: 64px 1fr; align-items: start; gap: 12px; }
-  .clients dt { font-size: 14px; font-weight: 700; color: var(--steel); padding-top: 6px; }
-  .clients dd { margin: 0; }
-  .clients ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-  .clients li { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 5px 12px; font-size: 15px; font-weight: 500; color: var(--ink); line-height: 1.5; }
-  .clients-more { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; margin-top: 14px; font-size: 14px; }
-  .clients-more a { color: var(--steel); font-weight: 500; text-decoration: none; }
-  .clients-more span { color: var(--muted); font-size: 12.5px; }
   .area-lead { color: var(--muted); margin: -6px 0 16px; }
   .patent-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
   .patent-strip a { display: block; height: 100%; background: var(--navy); color: #fff; border-radius: 10px; padding: 16px 18px; text-decoration: none; }
@@ -142,9 +110,6 @@ const stats = [
     .hero h1 { font-size: 30px; }
     }
   @media (max-width: 520px) {
-    .clients dl > div { grid-template-columns: 1fr; gap: 6px; }
-    .clients dt { padding-top: 0; }
-    .clients li { font-size: 14px; padding: 4px 10px; }
     .hero-inner { flex-direction: column-reverse; align-items: flex-start; padding-top: 32px; padding-bottom: 40px; gap: 14px; }
     .hero-symbol { width: 96px; }
     .hero h1 { font-size: 26px; }
