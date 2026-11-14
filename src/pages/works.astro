@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { works } from '../data/works';
 import { company } from '../data/site';
+import CountUp from '../components/CountUp.astro';
 
 const label = { reinforce: '구조보강', pile: '소구경파일' } as const;
 const first = works.reduce((y, w) => Math.min(y, Number(w.ym.slice(0, 4))), 9999);
@@ -12,6 +13,12 @@ const nPublic = works.filter((w) => w.pub).length;
 const who = (w: (typeof works)[number]) => [w.owner, w.builder].filter(Boolean).join(' / ');
 const years = [...new Set(works.map((w) => w.ym.slice(0, 4)))].sort((a, b) => b.localeCompare(a));
 const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith(y)) }));
+// 연도별 막대 그래프(옛 해 → 최근 해). 막대를 누르면 아래 목록이 그 해로 바뀐다(2026-11-14 연도 연동)
+const bars = [...years].reverse().map((y) => {
+  const it = works.filter((w) => w.ym.startsWith(y));
+  return { y, r: it.filter((w) => w.method === 'reinforce').length, p: it.filter((w) => w.method === 'pile').length, n: it.length };
+});
+const barMax = Math.max(...bars.map((b) => b.n));
 ---
 <BaseLayout
   title="시공 경력"
@@ -29,10 +36,30 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
   <div class="inner">
     <section class="section">
       <div class="stats">
-        <div><b>{total}</b><span>참여 현장</span></div>
-        <div><b>{nRein}</b><span>구조보강</span></div>
-        <div><b>{nPile}</b><span>소구경파일</span></div>
-        <div><b>{nPublic}</b><span>공공기관</span></div>
+        <div><b data-count>{total}</b><span>참여 현장</span></div>
+        <div><b data-count>{nRein}</b><span>구조보강</span></div>
+        <div><b data-count>{nPile}</b><span>소구경파일</span></div>
+        <div><b data-count>{nPublic}</b><span>공공기관</span></div>
+      </div>
+    </section>
+
+    <section class="section chart" aria-labelledby="chart-h">
+      <div class="chart-head">
+        <h2 id="chart-h">연도별 참여 현장</h2>
+        <p class="legend"><span class="k reinforce"></span>구조보강 <span class="k pile"></span>소구경파일</p>
+      </div>
+      <p class="chart-tip">막대를 누르면 그해 공사 목록을 봅니다.</p>
+      <div class="bars" style={`--max:${barMax}`}>
+        {bars.map((b) => (
+          <button type="button" class="bar" data-y={b.y} aria-label={`${b.y}년 ${b.n}곳 (구조보강 ${b.r}, 소구경파일 ${b.p})`} aria-pressed="false">
+            <span class="n">{b.n}</span>
+            <span class="col" style={`--h:${b.n}`}>
+              <span class="seg pile" style={`--v:${b.p}`}></span>
+              <span class="seg reinforce" style={`--v:${b.r}`}></span>
+            </span>
+            <span class="yy"><span class="full">{b.y}</span><span class="short">'{b.y.slice(2)}</span></span>
+          </button>
+        ))}
       </div>
     </section>
 
@@ -82,6 +109,7 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
       </div>
     </section>
   </div>
+  <CountUp />
 </BaseLayout>
 
 <style>
@@ -89,6 +117,29 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
   .stats div { background: var(--soft); border-radius: var(--radius); padding: 22px 20px; display: flex; flex-direction: column; gap: 4px; }
   .stats b { font-size: 34px; color: var(--navy); line-height: 1.1; letter-spacing: -.02em; }
   .stats span { color: var(--muted); font-size: 15px; }
+
+  /* 연도별 막대 그래프 */
+  .chart { margin-top: 40px; }
+  .chart-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .chart-head h2 { font-size: 22px; color: var(--navy); }
+  .legend { color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 6px; }
+  .legend .k { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-left: 8px; }
+  .k.reinforce, .seg.reinforce { background: var(--steel); }
+  .k.pile, .seg.pile { background: #8C9A3E; }
+  .chart-tip { color: var(--muted); font-size: 14px; margin-top: 2px; }
+  .bars { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; align-items: end; height: 220px; margin-top: 14px; padding-bottom: 2px; border-bottom: 1.5px solid var(--line); }
+  .bar { all: unset; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; cursor: pointer; border-radius: 6px 6px 0 0; }
+  .bar:focus-visible { outline: 2px solid var(--steel); outline-offset: 2px; }
+  .bar .n { text-align: center; font-size: 13px; font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; }
+  .bar .col { display: flex; flex-direction: column; height: calc(var(--h) / var(--max) * (100% - 44px)); min-height: 3px; border-radius: 5px 5px 0 0; overflow: hidden; transform-origin: bottom; transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .2s; }
+  .bar .seg { display: block; flex: var(--v) 0 0; }
+  .bar .yy { text-align: center; font-size: 12.5px; color: var(--muted); margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .bar .short { display: none; }
+  .bar:hover .col { opacity: .82; }
+  .bars.has-pick .bar[aria-pressed='false'] .col { opacity: .3; }
+  .bar[aria-pressed='true'] .yy { color: var(--navy); font-weight: 700; }
+  .bars.grow .col { transform: scaleY(0); }
+  @media (prefers-reduced-motion: reduce) { .bar .col { transition: none; } .bars.grow .col { transform: none; } }
 
   .works { margin-top: 40px; }
   .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding-bottom: 18px; border-bottom: 2px solid var(--navy); position: sticky; top: 76px; background: #fff; z-index: 5; padding-top: 12px; }
@@ -102,7 +153,7 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
   .year[hidden], .list li[hidden] { display: none; }
   .count b { color: var(--navy); font-size: 18px; margin-right: 2px; }
 
-  .year { margin-top: 36px; }
+  .year { margin-top: 36px; scroll-margin-top: 190px; }
   .year h2 { font-size: 22px; color: var(--navy); margin-bottom: 8px; }
   .year h2 small { font-size: 15px; color: var(--muted); font-weight: 400; margin-left: 8px; }
   .list li { display: grid; grid-template-columns: 52px 1fr 250px 92px 76px; gap: 14px; align-items: center; padding: 12px 4px; border-bottom: 1px solid var(--line); font-size: 15.5px; }
@@ -129,8 +180,16 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
     .list .bl { grid-area: bl; }
     .list .bl:empty { display: none; }
   }
+  @media (max-width: 860px) {
+    .bars { gap: 3px; height: 180px; }
+    .bar .full { display: none; }
+    .bar .short { display: inline; }
+    .bar .n { font-size: 11.5px; }
+    .bar .yy { font-size: 11px; }
+  }
   @media (max-width: 520px) {
     .filters { top: 64px; }
+    .year { scroll-margin-top: 250px; }
     .stats b { font-size: 28px; }
     .stats div { padding: 16px; }
     .tabs button { padding: 7px 12px; font-size: 14.5px; }
@@ -179,7 +238,34 @@ const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith
     history.replaceState(null, '', u);
     apply();
   }));
-  yearSel.addEventListener('change', apply);
+  // 연도별 막대 — 누르면 연도 선택칸과 같이 바뀐다. 같은 막대를 다시 누르면 「모든 연도」
+  const barBox = document.querySelector<HTMLElement>('.bars')!;
+  const bars = [...barBox.querySelectorAll<HTMLButtonElement>('.bar')];
+  function markBars() {
+    const y = yearSel.value;
+    bars.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.y === y)));
+    barBox.classList.toggle('has-pick', !!y);
+  }
+  bars.forEach((b) => b.addEventListener('click', () => {
+    yearSel.value = yearSel.value === b.dataset.y ? '' : b.dataset.y!;
+    apply();
+    markBars();
+    if (yearSel.value) document.querySelector(`.year[data-year="${yearSel.value}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+  // 화면에 들어오면 막대가 아래에서 차오름
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    barBox.classList.add('grow');
+    const io = new IntersectionObserver((l) => { if (l[0].isIntersecting) { barBox.classList.remove('grow'); io.disconnect(); } }, { threshold: 0.3 });
+    io.observe(barBox);
+    // 안전장치: 3초 뒤에도 화면에 보이는데 막대가 안 올라왔으면 그냥 보여 줌
+    setTimeout(() => {
+      const r = barBox.getBoundingClientRect();
+      if (barBox.classList.contains('grow') && r.top < innerHeight && r.bottom > 0) { barBox.classList.remove('grow'); io.disconnect(); }
+    }, 3000);
+  }
+
+  yearSel.addEventListener('change', () => { apply(); markBars(); });
   q.addEventListener('input', apply);
   apply();
+  markBars();
 </script>

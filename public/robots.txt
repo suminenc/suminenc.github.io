@@ -3,3 +3,4 @@ Allow: /
 Disallow: /catalog/print/
 
 Sitemap: https://suminenc.github.io/sitemap.xml
+Sitemap: https://suminenc.github.io/sitemap.txt

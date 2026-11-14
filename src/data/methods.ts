@@ -7,7 +7,8 @@ export type Block =
   | { type: 'text'; title: string; paras: string[] }
   | { type: 'list'; title: string; items: string[] }
   | { type: 'steps'; title: string; items: Step[]; cols?: 3 | 4; contain?: boolean }
-  | { type: 'figures'; title: string; items: Step[]; cols?: number }
+  // compare: 웹에서 두 캡션(a, b)이 번갈아 나오는 그림을 「바꿔 보기」 스위치로 묶음(카탈로그 인쇄는 그대로 격자)
+  | { type: 'figures'; title: string; items: Step[]; cols?: number; compare?: { a: string; b: string } }
   | { type: 'dl'; title: string; items: { dt: string; dd?: string[] }[] }
   | { type: 'video'; title: string; youtubeId: string };
 
@@ -267,6 +268,7 @@ export const methods: Method[] = [
       {
         type: 'figures',
         title: '기존 공법과의 비교',
+        compare: { a: 'HNC 공법', b: '기존 공법' },
         items: [
           { img: im('civil_li2_img01'), cap: 'HNC 공법' },
           { img: im('civil_li2_img04'), cap: '기존 공법' },
@@ -351,6 +353,7 @@ export const methods: Method[] = [
         type: 'figures',
         title: '기존 공법과의 비교',
         cols: 3,
+        compare: { a: 'FIP 공법', b: '기존 공법' },
         items: [
           { img: im('civil_li2_img07'), cap: '구성' },
           { img: im('civil_li2_img08'), cap: 'FIP 공법' },

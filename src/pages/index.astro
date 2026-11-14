@@ -4,6 +4,7 @@ import { company, catalog } from '../data/site';
 import { byGroup, groups, patents } from '../data/methods';
 import MethodCards from '../components/MethodCards.astro';
 import { works } from '../data/works';
+import CountUp from '../components/CountUp.astro';
 
 const areas = (['reinforce', 'pile'] as const).map((g) => ({ key: g, ...groups[g], items: byGroup(g) }));
 // 첫 화면 실적 숫자 — works.ts(시공 경력)에서 자동으로 센다(2026-11-05 대표님).
@@ -13,10 +14,10 @@ const START = new Date('2010-04-07');
 const now = new Date();
 const fullYears = now.getFullYear() - START.getFullYear() - (now < new Date(now.getFullYear(), START.getMonth(), START.getDate()) ? 1 : 0);
 const stats = [
-  { n: `${fullYears}년`, t: '현장 경력', href: '/works/' },
-  { n: `${works.length}곳`, t: '참여 현장', href: '/works/' },
-  { n: `${works.filter((w) => w.pub).length}곳`, t: '학교·관공서 공사', href: '/works/' },
-  { n: `${patents.length}건`, t: '보유 특허 공법', href: '/patent/' },
+  { n: fullYears, u: '년', t: '현장 경력', href: '/works/' },
+  { n: works.length, u: '곳', t: '참여 현장', href: '/works/' },
+  { n: works.filter((w) => w.pub).length, u: '곳', t: '학교·관공서 공사', href: '/works/' },
+  { n: patents.length, u: '건', t: '보유 특허 공법', href: '/patent/' },
 ];
 ---
 <BaseLayout>
@@ -29,7 +30,7 @@ const stats = [
         <div class="hero-proof">
           <ul class="hero-stats">
             {stats.map((x) => (
-              <li><a href={x.href}><b>{x.n}</b><span>{x.t}</span></a></li>
+              <li><a href={x.href}><b><span data-count>{x.n}</span>{x.u}</b><span>{x.t}</span></a></li>
             ))}
           </ul>
           <p class="hero-note">※ 한길특수건설(주) 재직 시 참여한 현장 포함</p>
@@ -68,6 +69,7 @@ const stats = [
       </ul>
     </section>
   </div>
+  <CountUp />
 </BaseLayout>
 
 <style>
@@ -83,7 +85,7 @@ const stats = [
   .hero-stats li + li { border-left: 1px solid var(--line); }
   .hero-stats a { display: block; padding: 0 8px; text-align: center; text-decoration: none; }
   .hero-stats b { display: block; font-size: 26px; line-height: 1.2; color: var(--navy); letter-spacing: -.01em; }
-  .hero-stats span { display: block; margin-top: 3px; font-size: 13px; color: var(--muted); }
+  .hero-stats a > span { display: block; margin-top: 3px; font-size: 13px; color: var(--muted); }
   .hero-stats a:hover b { color: var(--steel); }
   .hero-note { margin: 12px 16px 0; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 12.5px; color: var(--muted); text-align: right; }
   .hero-symbol { width: 240px; flex: none; mix-blend-mode: multiply; }

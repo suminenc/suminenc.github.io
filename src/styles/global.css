@@ -160,3 +160,42 @@ a.card:hover { box-shadow: 0 8px 24px rgba(16,43,74,.12); transform: translateY(
   .btn { min-height: 48px; padding: 0 18px; font-size: 15.5px; }
   .site-footer { margin-top: 72px; font-size: 13px; }
 }
+
+/* 기존 공법 비교 바꿔 보기 (2026-11-14) */
+.cmp-switch { display: inline-flex; padding: 4px; margin-bottom: 14px; background: var(--soft); border: 1px solid var(--line); border-radius: 999px; }
+.cmp-switch button { border: 0; background: none; font: inherit; font-size: 15px; font-weight: 500; color: var(--muted); padding: 7px 18px; border-radius: 999px; cursor: pointer; transition: background .2s, color .2s; }
+.cmp-switch button[aria-pressed='true'] { background: var(--navy); color: #fff; font-weight: 700; }
+.cmp .pair .fr { position: relative; }
+.cmp .pair .fr img { position: absolute; inset: 0; transition: opacity .35s ease; }
+.cmp[data-show='a'] .pair img.vb, .cmp[data-show='b'] .pair img.va { opacity: 0; }
+.cmp .pair figcaption span { display: none; }
+.cmp[data-show='a'] .pair figcaption .va, .cmp[data-show='b'] .pair figcaption .vb { display: inline; font-weight: 700; color: var(--navy); }
+
+/* 시공 순서 한 장씩 보기 (2026-11-14) */
+.step-tool { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin: -4px 0 12px; max-width: 680px; }
+.step-view { flex: none; border: 1.5px solid var(--line); background: #fff; color: var(--steel); font: inherit; font-size: 14px; font-weight: 500; border-radius: 999px; padding: 5px 14px; cursor: pointer; }
+.steps.is-stepper { display: block; max-width: 680px; outline: none; }
+.steps.is-stepper figure { display: none; cursor: pointer; }
+.steps.is-stepper figure.on { display: flex; animation: step-in .35s ease; }
+.steps.is-stepper figcaption { font-size: 16.5px; padding: 14px 18px 16px; }
+@keyframes step-in { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+.step-bar { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; }
+.step-bar[hidden] { display: none; }
+.step-bar > button { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--line); background: #fff; color: var(--navy); font-size: 26px; line-height: 1; cursor: pointer; }
+.step-bar > button:disabled { opacity: .35; cursor: default; }
+.step-mid { flex: 1; min-width: 0; }
+.step-no { text-align: center; font-size: 14px; color: var(--muted); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+.step-no b { color: var(--navy); font-size: 16px; }
+.step-track { display: flex; gap: 4px; }
+.step-track button { flex: 1; height: 8px; padding: 0; border: 0; border-radius: 4px; background: var(--line); cursor: pointer; transition: background .3s; }
+.step-track button.done { background: var(--light); }
+.step-track button[aria-current='true'] { background: var(--navy); }
+@media (prefers-reduced-motion: reduce) {
+  .steps.is-stepper figure.on { animation: none; }
+  .cmp .pair .fr img, .step-track button { transition: none; }
+}
+@media (max-width: 520px) {
+  .cmp-switch { display: flex; }
+  .cmp-switch button { flex: 1; padding: 7px 10px; }
+  .cmp .cmp-grid { grid-template-columns: 1fr; }
+}

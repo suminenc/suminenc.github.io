@@ -1,5 +1,5 @@
 ---
-import type { Block } from '../data/methods';
+import type { Block, Step } from '../data/methods';
 
 interface Props {
   blocks: Block[];
@@ -7,6 +7,18 @@ interface Props {
 }
 
 const { blocks, alt } = Astro.props;
+
+// 비교 그림 묶기: a 캡션 다음에 b 캡션이 오면 한 칸(바꿔 보기), 나머지(예: FIP 「구성」)는 그대로 한 칸
+type Cell = { one: Step } | { a: Step; b: Step };
+function pairUp(items: Step[], c: { a: string; b: string }): Cell[] {
+  const out: Cell[] = [];
+  for (let i = 0; i < items.length; i++) {
+    const x = items[i], y = items[i + 1];
+    if (x.cap === c.a && y?.cap === c.b) { out.push({ a: x, b: y }); i++; }
+    else out.push({ one: x });
+  }
+  return out;
+}
 ---
 {blocks.map((b) => (
   <section class="section">
@@ -27,7 +39,31 @@ const { blocks, alt } = Astro.props;
         ))}
       </div>
     )}
-    {b.type === 'figures' && (
+    {b.type === 'figures' && b.compare && (
+      <div class="cmp" data-show="a">
+        <div class="cmp-switch" role="group" aria-label="비교해서 보기">
+          <button type="button" data-v="a" aria-pressed="true">{b.compare.a}</button>
+          <button type="button" data-v="b" aria-pressed="false">{b.compare.b}</button>
+        </div>
+        <div class="figures cmp-grid" style={`--cols:${b.cols ?? 3}`}>
+          {pairUp(b.items, b.compare).map((c) => 'one' in c ? (
+            <figure>
+              <div class="fr"><img src={c.one.img} alt={`${alt} ${c.one.cap}`} loading="lazy" decoding="async" /></div>
+              <figcaption>{c.one.cap}</figcaption>
+            </figure>
+          ) : (
+            <figure class="pair">
+              <div class="fr">
+                <img class="va" src={c.a.img} alt={`${alt} ${c.a.cap}`} loading="lazy" decoding="async" />
+                <img class="vb" src={c.b.img} alt={`${alt} 비교 ${c.b.cap}`} loading="lazy" decoding="async" />
+              </div>
+              <figcaption><span class="va">{c.a.cap}</span><span class="vb">{c.b.cap}</span></figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    )}
+    {b.type === 'figures' && !b.compare && (
       <div class:list={['figures', { single: b.cols === 1 }]} style={`--cols:${b.cols ?? 2}`}>
         {b.items.map((s) => (
           <figure>
@@ -60,3 +96,76 @@ const { blocks, alt } = Astro.props;
     )}
   </section>
 ))}
+
+<script>
+  // 기존 공법 비교: 스위치를 누르면 같은 자리에서 그림이 바뀐다(2026-11-14 유튜브 HTML 슬라이드 「연동 효과」 참고)
+  for (const box of document.querySelectorAll<HTMLElement>('.cmp')) {
+    const btns = [...box.querySelectorAll<HTMLButtonElement>('.cmp-switch button')];
+    btns.forEach((b) => b.addEventListener('click', () => {
+      box.dataset.show = b.dataset.v!;
+      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    }));
+  }
+
+  // 시공 순서 한 장씩 보기: 사진 4장 이상인 순서 묶음은 한 장씩 크게 넘겨 보고, 「모아 보기」로 지금 격자로 돌아감.
+  // 격자 HTML은 그대로 두고 화면에서만 바꾼다(스크립트가 꺼지면 지금처럼 격자).
+  for (const grid of document.querySelectorAll<HTMLElement>('.steps')) {
+    const figs = [...grid.querySelectorAll<HTMLElement>('figure')];
+    if (figs.length < 4) continue;
+    let i = 0;
+    const tool = document.createElement('div');
+    tool.className = 'step-tool';
+    tool.innerHTML = '<button type="button" class="step-view">모아 보기</button>';
+    const bar = document.createElement('div');
+    bar.className = 'step-bar';
+    bar.innerHTML =
+      '<button type="button" class="prev" aria-label="이전 단계">‹</button>' +
+      '<div class="step-mid"><p class="step-no" aria-live="polite"></p><div class="step-track">' +
+      figs.map((_, k) => `<button type="button" aria-label="${k + 1}단계"></button>`).join('') +
+      '</div></div><button type="button" class="next" aria-label="다음 단계">›</button>';
+    tool.prepend(bar);
+    grid.before(tool);
+    const segs = [...bar.querySelectorAll<HTMLButtonElement>('.step-track button')];
+    const no = bar.querySelector('.step-no')!;
+    const prev = bar.querySelector<HTMLButtonElement>('.prev')!;
+    const next = bar.querySelector<HTMLButtonElement>('.next')!;
+    const view = tool.querySelector<HTMLButtonElement>('.step-view')!;
+    const show = (k: number) => {
+      i = Math.max(0, Math.min(figs.length - 1, k));
+      figs.forEach((f, n) => f.classList.toggle('on', n === i));
+      segs.forEach((s, n) => { s.classList.toggle('done', n <= i); s.setAttribute('aria-current', String(n === i)); });
+      no.innerHTML = `<b>${i + 1}</b> / ${figs.length}`;
+      prev.disabled = i === 0;
+      next.disabled = i === figs.length - 1;
+      // 다음 사진을 미리 받아 둠
+      figs[i + 1]?.querySelector('img')?.setAttribute('loading', 'eager');
+    };
+    const setMode = (one: boolean) => {
+      grid.classList.toggle('is-stepper', one);
+      bar.hidden = !one;
+      view.textContent = one ? '모아 보기' : '한 장씩 보기';
+    };
+    prev.addEventListener('click', () => show(i - 1));
+    next.addEventListener('click', () => show(i + 1));
+    segs.forEach((s, n) => s.addEventListener('click', () => show(n)));
+    view.addEventListener('click', () => setMode(!grid.classList.contains('is-stepper')));
+    grid.tabIndex = 0;
+    grid.addEventListener('keydown', (e) => {
+      if (!grid.classList.contains('is-stepper')) return;
+      if (e.key === 'ArrowRight') show(i + 1);
+      if (e.key === 'ArrowLeft') show(i - 1);
+    });
+    // 폰에서 옆으로 밀어 넘기기
+    let x0 = 0, y0 = 0;
+    grid.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    grid.addEventListener('touchend', (e) => {
+      if (!grid.classList.contains('is-stepper')) return;
+      const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(i + (dx < 0 ? 1 : -1));
+    });
+    // 사진을 누르면 다음 단계
+    figs.forEach((f) => f.addEventListener('click', () => { if (grid.classList.contains('is-stepper')) show(i + 1); }));
+    show(0);
+    setMode(true);
+  }
+</script>

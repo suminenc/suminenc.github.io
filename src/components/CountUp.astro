@@ -1,0 +1,44 @@
+---
+// 숫자 차오르기 — <span data-count>287</span> 처럼 쓰면 화면에 들어올 때 0부터 올라간다.
+// HTML에는 처음부터 진짜 숫자가 있어 검색 수집·스크립트 꺼진 화면은 그대로 보인다.
+// 휴대폰·PC의 「동작 줄이기」 설정을 켠 사람에게는 움직이지 않는다. (2026-11-14 유튜브 HTML 슬라이드 참고 개선)
+---
+<script>
+  const els = [...document.querySelectorAll<HTMLElement>('[data-count]')];
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (els.length && !still && 'IntersectionObserver' in window) {
+    const run = (el: HTMLElement) => {
+      const end = Number(el.dataset.count || el.textContent);
+      const t0 = performance.now();
+      const ms = 1000;
+      const step = (t: number) => {
+        const p = Math.min(1, (t - t0) / ms);
+        el.textContent = String(Math.round(end * (1 - Math.pow(1 - p, 3))));
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+      // 탭이 뒤에 있어 그리기가 멈춰도 끝 숫자는 반드시 나오게
+      setTimeout(() => { el.textContent = String(end); }, ms + 200);
+    };
+    const io = new IntersectionObserver((list) => {
+      for (const e of list) {
+        if (!e.isIntersecting) continue;
+        io.unobserve(e.target);
+        run(e.target as HTMLElement);
+      }
+    }, { threshold: 0.4 });
+    for (const el of els) {
+      el.dataset.count = el.dataset.count || el.textContent!.trim();
+      el.style.fontVariantNumeric = 'tabular-nums';
+      el.textContent = '0';
+      io.observe(el);
+    }
+    // 안전장치: 3초 뒤에도 화면에 보이는데 0이면 끝 숫자로
+    setTimeout(() => {
+      for (const el of els) {
+        const r = el.getBoundingClientRect();
+        if (el.textContent === '0' && el.dataset.count !== '0' && r.top < innerHeight && r.bottom > 0) { io.unobserve(el); el.textContent = el.dataset.count!; }
+      }
+    }, 3000);
+  }
+</script>
