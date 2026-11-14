@@ -70,7 +70,25 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     </div>
   </footer>
 
+  <!-- 폰 아래 고정 연락 단추(2026-11-14 대표님). PC에서는 숨김 -->
+  <nav class="quick-call" aria-label="빠른 연락">
+    <a class="qc-call" href={`tel:${company.phone}`}>전화 걸기</a>
+    <a class="qc-sms" href={`sms:${company.phone}`}>문자 보내기</a>
+  </nav>
+
   <script>
+    // 화면에 큰 「전화 걸기」 단추가 보이는 동안은 아래 고정 단추를 숨김(같은 단추 두 번 안 보이게)
+    const qc = document.querySelector<HTMLElement>('.quick-call');
+    const bigCalls = [...document.querySelectorAll<HTMLElement>('main a.btn[href^="tel:"]')];
+    if (qc && bigCalls.length && 'IntersectionObserver' in window) {
+      const seen = new Set<Element>();
+      const io = new IntersectionObserver((list) => {
+        for (const e of list) e.isIntersecting ? seen.add(e.target) : seen.delete(e.target);
+        qc.classList.toggle('away', seen.size > 0);
+      });
+      bigCalls.forEach((b) => io.observe(b));
+    }
+
     // 휴대폰 메뉴 열고 닫기
     const btn = document.querySelector<HTMLButtonElement>('.menu-btn');
     const navEl = document.getElementById('site-nav');
