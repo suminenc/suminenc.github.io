@@ -13,12 +13,16 @@ const nPublic = works.filter((w) => w.pub).length;
 const who = (w: (typeof works)[number]) => [w.owner, w.builder].filter(Boolean).join(' / ');
 const years = [...new Set(works.map((w) => w.ym.slice(0, 4)))].sort((a, b) => b.localeCompare(a));
 const byYear = years.map((y) => ({ y, items: works.filter((w) => w.ym.startsWith(y)) }));
-// 연도별 막대 그래프(옛 해 → 최근 해). 막대를 누르면 아래 목록이 그 해로 바뀐다(2026-11-14 연도 연동)
+// 누적 막대 그래프(옛 해 → 최근 해). 그해까지 쌓인 현장 수라 늘 올라간다.
+// 해마다 건수 그래프는 최근 해가 적어 보여 대표님이 뺌(2026-11-14). 막대를 누르면 아래 목록이 그 해로 바뀐다.
+let accR = 0, accP = 0;
 const bars = [...years].reverse().map((y) => {
   const it = works.filter((w) => w.ym.startsWith(y));
-  return { y, r: it.filter((w) => w.method === 'reinforce').length, p: it.filter((w) => w.method === 'pile').length, n: it.length };
+  accR += it.filter((w) => w.method === 'reinforce').length;
+  accP += it.filter((w) => w.method === 'pile').length;
+  return { y, r: accR, p: accP, n: accR + accP, k: it.length };
 });
-const barMax = Math.max(...bars.map((b) => b.n));
+const barMax = bars[bars.length - 1].n;
 ---
 <BaseLayout
   title="시공 경력"
@@ -36,22 +40,22 @@ const barMax = Math.max(...bars.map((b) => b.n));
   <div class="inner">
     <section class="section">
       <div class="stats">
-        <div><b data-count>{total}</b><span>참여 현장</span></div>
-        <div><b data-count>{nRein}</b><span>구조보강</span></div>
-        <div><b data-count>{nPile}</b><span>소구경파일</span></div>
-        <div><b data-count>{nPublic}</b><span>공공기관</span></div>
+        <button type="button" data-m=""><b data-count>{total}</b><span>참여 현장</span></button>
+        <button type="button" data-m="reinforce"><b data-count>{nRein}</b><span>구조보강</span></button>
+        <button type="button" data-m="pile"><b data-count>{nPile}</b><span>소구경파일</span></button>
+        <button type="button" data-m="pub"><b data-count>{nPublic}</b><span>학교·관공서</span></button>
       </div>
     </section>
 
     <section class="section chart" aria-labelledby="chart-h">
       <div class="chart-head">
-        <h2 id="chart-h">연도별 참여 현장</h2>
+        <h2 id="chart-h">누적 참여 현장</h2>
         <p class="legend"><span class="k reinforce"></span>구조보강 <span class="k pile"></span>소구경파일</p>
       </div>
-      <p class="chart-tip">막대를 누르면 그해 공사 목록을 봅니다.</p>
+      <p class="chart-tip">{first}년부터 해마다 더해 온 참여 현장입니다. 막대를 누르면 그해 공사 목록을 봅니다.</p>
       <div class="bars" style={`--max:${barMax}`}>
         {bars.map((b) => (
-          <button type="button" class="bar" data-y={b.y} aria-label={`${b.y}년 ${b.n}곳 (구조보강 ${b.r}, 소구경파일 ${b.p})`} aria-pressed="false">
+          <button type="button" class="bar" data-y={b.y} aria-label={`${b.y}년까지 누적 ${b.n}곳 (그해 ${b.k}곳)`} aria-pressed="false">
             <span class="n">{b.n}</span>
             <span class="col" style={`--h:${b.n}`}>
               <span class="seg pile" style={`--v:${b.p}`}></span>
@@ -69,6 +73,7 @@ const barMax = Math.max(...bars.map((b) => b.n));
           <button type="button" role="tab" data-m="" aria-selected="true">전체</button>
           <button type="button" role="tab" data-m="reinforce" aria-selected="false">구조보강</button>
           <button type="button" role="tab" data-m="pile" aria-selected="false">소구경파일</button>
+          <button type="button" role="tab" data-m="pub" aria-selected="false">학교·관공서</button>
         </div>
         <div class="pick">
           <label class="sr-only" for="w-year">연도</label>
@@ -87,7 +92,7 @@ const barMax = Math.max(...bars.map((b) => b.n));
           <h2>{y}<small><span class="yn">{items.length}</span>곳</small></h2>
           <ul class="list">
             {items.map((w) => (
-              <li data-m={w.method} data-q={`${w.title} ${who(w)}`.toLowerCase()}>
+              <li data-m={w.method} data-pub={w.pub ? '1' : undefined} data-q={`${w.title} ${who(w)}`.toLowerCase()}>
                 <span class="ym">{w.ym.slice(5)}월</span>
                 <span class="tt">{w.title}</span>
                 <span class="od">{who(w)}</span>
@@ -114,7 +119,8 @@ const barMax = Math.max(...bars.map((b) => b.n));
 
 <style>
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
-  .stats div { background: var(--soft); border-radius: var(--radius); padding: 22px 20px; display: flex; flex-direction: column; gap: 4px; }
+  .stats button { all: unset; box-sizing: border-box; cursor: pointer; background: var(--soft); border: 1.5px solid transparent; border-radius: var(--radius); padding: 22px 20px; display: flex; flex-direction: column; gap: 4px; transition: border-color .2s; }
+  .stats button:hover, .stats button:focus-visible { border-color: var(--light); }
   .stats b { font-size: 34px; color: var(--navy); line-height: 1.1; letter-spacing: -.02em; }
   .stats span { color: var(--muted); font-size: 15px; }
 
@@ -141,7 +147,7 @@ const barMax = Math.max(...bars.map((b) => b.n));
   .bars.grow .col { transform: scaleY(0); }
   @media (prefers-reduced-motion: reduce) { .bar .col { transition: none; } .bars.grow .col { transform: none; } }
 
-  .works { margin-top: 40px; }
+  .works { margin-top: 40px; scroll-margin-top: 80px; }
   .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding-bottom: 18px; border-bottom: 2px solid var(--navy); position: sticky; top: 76px; background: #fff; z-index: 5; padding-top: 12px; }
   .tabs { display: flex; gap: 6px; }
   .tabs button { border: 1.5px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 15px; cursor: pointer; }
@@ -184,14 +190,15 @@ const barMax = Math.max(...bars.map((b) => b.n));
     .bars { gap: 3px; height: 180px; }
     .bar .full { display: none; }
     .bar .short { display: inline; }
-    .bar .n { font-size: 11.5px; }
+    .bar .n { font-size: 11.5px; visibility: hidden; white-space: nowrap; }
+    .bar:last-child .n, .bar[aria-pressed='true'] .n { visibility: visible; }
     .bar .yy { font-size: 11px; }
   }
   @media (max-width: 520px) {
     .filters { top: 64px; }
     .year { scroll-margin-top: 250px; }
     .stats b { font-size: 28px; }
-    .stats div { padding: 16px; }
+    .stats button { padding: 16px; }
     .tabs button { padding: 7px 12px; font-size: 14.5px; }
     .pick { min-width: 100%; }
     .count { margin-left: 0; }
@@ -208,7 +215,7 @@ const barMax = Math.max(...bars.map((b) => b.n));
   const empty = document.querySelector<HTMLElement>('.empty')!;
   const groups = [...document.querySelectorAll<HTMLElement>('.year')];
   let m = new URLSearchParams(location.search).get('m') ?? '';
-  if (!['reinforce', 'pile'].includes(m)) m = '';
+  if (!['reinforce', 'pile', 'pub'].includes(m)) m = '';
 
   function apply() {
     const y = yearSel.value;
@@ -218,7 +225,7 @@ const barMax = Math.max(...bars.map((b) => b.n));
       let k = 0;
       const yearOk = !y || g.dataset.year === y;
       for (const li of g.querySelectorAll<HTMLElement>('li')) {
-        const ok = yearOk && (!m || li.dataset.m === m) && words.every((w) => li.dataset.q!.includes(w));
+        const ok = yearOk && (!m || (m === 'pub' ? li.dataset.pub === '1' : li.dataset.m === m)) && words.every((w) => li.dataset.q!.includes(w));
         li.hidden = !ok;
         if (ok) k++;
       }
@@ -231,12 +238,20 @@ const barMax = Math.max(...bars.map((b) => b.n));
     tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.m === m)));
   }
 
-  tabs.forEach((t) => t.addEventListener('click', () => {
-    m = t.dataset.m ?? '';
+  function setM(v: string) {
+    m = v;
     const u = new URL(location.href);
     if (m) u.searchParams.set('m', m); else u.searchParams.delete('m');
     history.replaceState(null, '', u);
     apply();
+  }
+  tabs.forEach((t) => t.addEventListener('click', () => setM(t.dataset.m ?? '')));
+  // 위 숫자 상자를 누르면 같은 조건으로 목록을 거르고 목록으로 내려감
+  document.querySelectorAll<HTMLButtonElement>('.stats button').forEach((b) => b.addEventListener('click', () => {
+    yearSel.value = '';
+    setM(b.dataset.m ?? '');
+    markBars();
+    document.querySelector('.works')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }));
   // 연도별 막대 — 누르면 연도 선택칸과 같이 바뀐다. 같은 막대를 다시 누르면 「모든 연도」
   const barBox = document.querySelector<HTMLElement>('.bars')!;

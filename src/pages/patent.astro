@@ -13,7 +13,7 @@ import { patents } from '../data/methods';
   </div>
   <div class="inner">
     {patents.map((m) => (
-      <section class="section patent">
+      <section class="section patent" id={m.slug}>
         <div class="p-text">
           <h2>{m.title}</h2>
           <div class="info">
@@ -33,6 +33,7 @@ import { patents } from '../data/methods';
 </BaseLayout>
 
 <style>
+  .patent { scroll-margin-top: 90px; }
   .patent { display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; padding-bottom: 40px; border-bottom: 1px solid var(--line); }
   .patent .info { margin-bottom: 16px; }
   .patent .info .row b { width: 96px; }
